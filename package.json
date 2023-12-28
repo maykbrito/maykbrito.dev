@@ -1,0 +1,37 @@
+{
+  "name": "simple-tp",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.3.3",
+    "@astrojs/react": "^3.0.7",
+    "@astrojs/sitemap": "^3.0.4",
+    "@astrojs/tailwind": "^5.0.3",
+    "@notionhq/client": "^2.2.14",
+    "@radix-ui/react-avatar": "^1.0.4",
+    "@radix-ui/react-menubar": "^1.0.4",
+    "@radix-ui/react-navigation-menu": "^1.1.4",
+    "@radix-ui/react-slot": "^1.0.2",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "astro": "^4.0.6",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
+    "lucide-react": "^0.298.0",
+    "notion-to-md": "^3.1.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "reading-time": "^1.5.0",
+    "tailwind-merge": "^2.1.0",
+    "tailwindcss": "^3.3.7",
+    "tailwindcss-animate": "^1.0.7",
+    "typescript": "^5.3.3"
+  }
+}

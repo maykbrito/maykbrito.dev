@@ -1,0 +1,26 @@
+---
+import BaseHead from "@/components/BaseHead.astro";
+import Me from "@/components/Me.tsx";
+import Menu from "@/components/Menu";
+import config from '@/consts'
+---
+<html lang="pt-br">
+  <BaseHead {...config} />
+  <body>
+    <div class="page max-w-xl mx-auto">
+
+      <header class="flex items-center justify-between h-24">
+        <Me />
+        <Menu client:load/>
+      </header>
+      
+      <main>
+        
+      </main>
+      
+      <footer>
+        
+      </footer>
+    </div>
+  </body>
+</html>
