@@ -1,8 +1,6 @@
 ---
 import Menu from "@/components/Menu.tsx";
-import { ModeToggle } from "./ModeToogle";
 ---
-<header class="flex items-center justify-between h-24 max-w-2xl mx-auto">
-  <ModeToggle client:load />
-  <Menu client:idle />
+<header class="flex items-center justify-center h-24 max-w-2xl mx-auto">
+  <Menu client:only="react" />
 </header>
