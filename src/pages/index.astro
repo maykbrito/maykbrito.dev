@@ -1,94 +1,94 @@
 ---
-import { getImage } from 'astro:assets';
-
 import config from '@/consts'
 import Header from '@/components/Header.astro';
 import Layout from "@/layouts/Layout.astro";
-import { postImageImport } from "@/helpers/images.mjs";
+import { Button } from '@/components/ui/button';
+import { GithubIcon, InstagramIcon, TwitchIcon, YoutubeIcon } from 'lucide-react';
+import Me from '@/components/Me';
 
-const posts = await Astro.glob("./blog/*.mdx");
+const links = {
+  primary: [
+    { 
+      url: 'discover.maykbrito.dev',
+      title: 'Discover',
+      description: 'Curso de programação WEB gratuito'
+    },
+    {
+      url: 'rocketseat.com.br',
+      title: 'Rocketseat',
+      description: 'Formação em programação WEB'
+    },
+    {
+      url: 'seo.maykbrito.dev',
+      title: 'SEO para Devs',
+      description: 'Curso de SEO para DEVs'
+    }
+  ],
+  social: [
+    {
+      url: 'github.com/maykbrito',
+      title: 'Github',
+      icon: GithubIcon,
+    },
+    {
+      url: 'twitch.tv/maykbrito',
+      title: 'Twitch',
+      icon: TwitchIcon,
+    },
+    {
+      url: 'youtube.com/maykbrito',
+      title: 'Youtube',
+      icon: YoutubeIcon,
+    },
+    {
+      url: 'instagram.com/maykbrito',
+      title: 'Instagram',
+      icon: InstagramIcon,
+    }
+    
+  ]
+  }
 ---
 
 <Layout title={config.head.title} description={config.head.description} image={config.head.image}>
-
-    <div class="page max-w-2xl mx-auto px-10 md:px-0">
-
+  
+  <div class="page max-w-xs mx-auto px-10 md:px-0 antialiased grid gap-12">
       <Header />
+      <div class="text-center">
+        <Me className="mx-auto w-32 h-32" />
+        <div class="mb-2 mt-4 text-lg font-medium">@maykbrito</div>
+        <p class="leading-tight text-muted-foreground">
+          😍 Apaixonado por ensino.<br/>
+          ⭐️ Descomplicando a Programação WEB.<br/>
+          💡 Gosto de falar sobre hard e soft skills.<br/>
+        </p>
+      </div>
       
-      <main class="md:columns-2 gap-4 my-20">
+      <main class="grid gap-2 text-center">
         {
-          posts.length > 0 && posts
-            .map(async (post) => {
-
-              const { cover, title } = post?.frontmatter;
-                const dateStr = new Date(
-                  post.frontmatter.publish_date,
-                ).toLocaleString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                });
-
-                let optimizedCoverImage: any = null;
-                let coverImageSrc: string = "";
-
-                if (cover) {
-                  const results = await postImageImport(cover);
-                  const dynamicImg = results?.default;
-
-                  optimizedCoverImage = cover
-                    ? await getImage({ src: dynamicImg, width: 1400 })
-                    : "";
-                  coverImageSrc = (optimizedCoverImage as any).src;
-                }
-
-              return (
-                <a
-                  href={`/blog/${post.frontmatter.slug}`}
-                  class={
-                    "post-link-container block mb-4 " +
-                    post.frontmatter.tags
-                      .map((tag) => `post-link-tag-${tag.id}`)
-                      .join(" ")
-                  }
-                >
-                  <article class="h-fit transform rounded-lg border border-gray-200 bg-white shadow-md transition duration-100 ease-in dark:border-gray-700 dark:bg-gray-950 sm:hover:scale-[102%] lg:hover:scale-105">
-                    <div
-                      style="display:block"
-                      transition:name={`cover-image-${post.frontmatter.id}`}
-                      transition:animate="none"
-                    >
-                      {optimizedCoverImage && (
-                          <img
-                            class={`mb-1 h-auto w-full rounded-md rounded-b-none object-cover`}
-                            style={`aspect-ratio: 13/9`}
-                            src={coverImageSrc}
-                            alt="cover"
-                          />
-                        )}
-                    </div>
-                    <div
-                      class="p-4"
-                      transition:name={`cover-title-${post.frontmatter.id}`}
-                    >
-
-                      <h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                        {post.frontmatter.title}
-                      </h2>
-
-                      <p
-                        class="mb-4 whitespace-pre-line font-light text-gray-500 dark:text-gray-400"
-                        set:html={
-                          post.frontmatter.description !== "undefined"
-                            ? post.frontmatter.description
-                            : ""
-                        }
-                      />
-                    </div>
-                  </article>
-                </a>
-              );
-            })
+          links.primary.map(async (link) => (
+            <a 
+              class="border rounded border-gray-300 p-4 hover:bg-gray-100 dark:hover:bg-gray-800 dark:border-gray-800" 
+              href={`https://${link.url}`} 
+              target="_blank">
+              <strong class="font-bold text-lg">{link.title}</strong>
+              <p class="text-muted-foreground">{link.description}</p>
+            </a>
+          ))
         }
       </main>
+
+      <footer class="flex gap-2 justify-center">
+        {links.social.map(link => (
+          <a href={`https://${link.url}`} target="_blank">
+
+            <Button variant='outline' className='w-16 h-16'>
+              <link.icon />
+              <p class="sr-only">{link.title}</p>
+            </Button>
+          </a>
+        ))}
+      </footer>
+
+    </div>
 </Layout>
