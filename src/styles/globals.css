@@ -75,27 +75,9 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
 
-  .blog-content > p {
-    @apply mb-6 leading-8 tracking-wide text-lg dark:text-gray-400;
-  }
-
-  .blog-content > h1 {
-    @apply text-4xl mt-12 mb-4;
-  }
-
-  .blog-content > h2 {
-    @apply text-3xl mt-12 mb-4;
-  }
-
-  .blog-content > h3 {
-    @apply text-2xl mt-12 mb-4;
-  }
-
-  .blog-content > img {
-    @apply mb-2
-  }
 }

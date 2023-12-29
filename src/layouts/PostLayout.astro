@@ -129,12 +129,14 @@ const dateStr = new Date(frontmatter.publish_date).toLocaleString("en-US", {
               <Tags tags={frontmatter.tags} />
             </header>
 
-            <slot />
+            <div class="blog-content prose md:prose-md lg:prose-lg xl:prose-xl dark:prose-invert prose-a:text-yellow-500 prose-img:rounded-xl">
+              <slot />
+            </div>
           </article>
 
           {
             Astro.props.headings.length > 0 && (
-              <aside class="hidden xl:block xl:w-[350px]">
+              <aside class="hidden lg:block lg:w-[350px]">
                 <TableOfContents
                   headings={Astro.props.headings}
                   cardClass="format -mt-8 h-fit w-fit sticky top-4 w-full"

@@ -150,9 +150,7 @@ reading_time: "${estimatedReadingTime}"
 ---
 import Image from '../../components/Image.astro';
 
-<div class="blog-content">
 ${mdString}
-</div>
 `
 
   if (mdString) fs.writeFileSync(`${process.cwd()}/${POSTS_PATH}/${page.slug}.mdx`, pageContents);
