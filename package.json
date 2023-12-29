@@ -1,5 +1,5 @@
 {
-  "name": "simple-tp",
+  "name": "astro-blog-notion",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
@@ -7,12 +7,17 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "sync": "rimraf src/pages/blog/* && node src/astronot.js",
+    "sync:published": "rimraf src/pages/blog/* && node src/astronot.js --published",
+    "generate": "rimraf dist/** && ([ -d 'dist' ] || mkdir dist) && ([ -d 'dist/images' ] || mkdir dist/images) && ([ -d 'src/pages/blog' ] || mkdir src/pages/blog) && ([ -d 'src/images' ] || mkdir src/images) && ([ -d 'src/images/blog' ] || mkdir src/images/blog) && rimraf src/pages/blog/* && node src/astronot.js --published && astro build"
   },
   "dependencies": {
     "@astrojs/check": "^0.3.3",
+    "@astrojs/mdx": "^2.0.3",
     "@astrojs/react": "^3.0.7",
     "@astrojs/sitemap": "^3.0.4",
+    "@astrojs/svelte": "^5.0.3",
     "@astrojs/tailwind": "^5.0.3",
     "@notionhq/client": "^2.2.14",
     "@radix-ui/react-avatar": "^1.0.4",
@@ -24,11 +29,16 @@
     "astro": "^4.0.6",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "dotenv": "^16.3.1",
+    "image-type": "^5.2.0",
     "lucide-react": "^0.298.0",
     "notion-to-md": "^3.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "reading-time": "^1.5.0",
+    "rimraf": "^5.0.5",
+    "sharp": "^0.33.1",
+    "svelte": "^4.2.8",
     "tailwind-merge": "^2.1.0",
     "tailwindcss": "^3.3.7",
     "tailwindcss-animate": "^1.0.7",

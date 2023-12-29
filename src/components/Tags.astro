@@ -1,0 +1,15 @@
+---
+import { Badge } from "@/components/ui/badge"
+const { tags } = Astro.props;
+
+interface TagProps {
+  name: string;
+  color: string;
+}
+---
+
+<div class=`flex gap-2`>
+    {tags.map((tag: TagProps) => {
+      return(<Badge variant="outline">{tag.name}</Badge>)
+    })}
+</div>

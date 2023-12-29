@@ -17,15 +17,19 @@ export default function NavigationMenuDemo() {
   return (
     <NavigationMenu>
       <NavigationMenuList>
+      <NavigationMenuItem>
+            <NavigationMenuLink href="/" className={navigationMenuTriggerStyle()}>
+              Home
+            </NavigationMenuLink>
+        </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuTrigger>Sobre</NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
               <li className="row-span-3">
                 <NavigationMenuLink asChild>
-                  <a
+                  <div
                     className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md text-center"
-                    href="/"
                   >
                     <Me className="mx-auto" />
                     <div className="mb-2 mt-4 text-lg font-medium">
@@ -36,7 +40,7 @@ export default function NavigationMenuDemo() {
 ⭐️ Descomplicando a Programação WEB.<br/>
 💡 Gosto de falar sobre hard e soft skills.<br/>
                     </p>
-                  </a>
+                  </div>
                 </NavigationMenuLink>
               </li>
               <ListItem href="https://discover.maykbrito.dev" title="Discover">
@@ -50,20 +54,6 @@ export default function NavigationMenuDemo() {
               </ListItem>
             </ul>
           </NavigationMenuContent>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <a href="/">
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Blog
-            </NavigationMenuLink>
-          </a>
-        </NavigationMenuItem>
-        <NavigationMenuItem>
-          <a href="/about">
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Contato
-            </NavigationMenuLink>
-          </a>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>

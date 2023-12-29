@@ -1,0 +1,73 @@
+---
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+
+const {
+  headings,
+  olClass = "leading-tight",
+  aClass = "no-underline dark:text-gray-400",
+  cardClass = "format -mt-8 h-fit w-fit",
+} = Astro.props;
+const tableOfContents = generateTOC(headings);
+
+function generateTOC(
+  headings,
+  options = {
+    olClass,
+    aClass,
+  },
+) {
+  if (headings.length === 0) {
+    console.warn("No Headings found");
+    return "";
+  }
+
+  const { olClass, aClass } = options;
+
+  let toc = `<ol class='${olClass}'>`;
+
+  let currentLevel = 1;
+
+  for (let i = 0; i < headings.length; i++) {
+    let heading = headings[i];
+    let level = Number(heading.depth);
+
+    // Adjust the indentation depending upon whether we are moving in/out/within a level
+    if (level > currentLevel) {
+      while (level > currentLevel) {
+        toc += "<ol>";
+        currentLevel++;
+      }
+    } else if (level < currentLevel) {
+      while (level < currentLevel) {
+        toc += "</ol>";
+        currentLevel--;
+      }
+    }
+    toc += `<li class="mt-0 pt-4"><a href='#${heading.slug}' class='${aClass}'>${heading.text}</a></li>`;
+  }
+
+  // If we're not back at level 1, we need to close some tags
+  while (currentLevel > 1) {
+    toc += "</ol>";
+    currentLevel--;
+  }
+
+  toc += "</ol>";
+
+  return toc;
+}
+---
+
+<Card className={cardClass}>
+  <CardHeader>
+    <CardTitle>Neste artigo</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <div class="table-of-content" set:html={tableOfContents} />
+  </CardContent>
+</Card>

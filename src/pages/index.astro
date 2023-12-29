@@ -1,26 +1,94 @@
 ---
-import BaseHead from "@/components/BaseHead.astro";
-import Me from "@/components/Me.tsx";
-import Menu from "@/components/Menu";
-import config from '@/consts'
----
-<html lang="pt-br">
-  <BaseHead {...config} />
-  <body>
-    <div class="page max-w-xl mx-auto">
+import { getImage } from 'astro:assets';
 
-      <header class="flex items-center justify-between h-24">
-        <Me />
-        <Menu client:load/>
-      </header>
+import config from '@/consts'
+import Header from '@/components/Header.astro';
+import Layout from "@/layouts/Layout.astro";
+import { postImageImport } from "@/helpers/images.mjs";
+
+const posts = await Astro.glob("./blog/*.mdx");
+---
+
+<Layout title={config.head.title} description={config.head.description} image={config.head.image}>
+
+    <div class="page max-w-2xl mx-auto px-10 md:px-0">
+
+      <Header />
       
-      <main>
-        
+      <main class="md:columns-2 gap-4 my-20">
+        {
+          posts.length > 0 && posts
+            .map(async (post) => {
+
+              const { cover, title } = post?.frontmatter;
+                const dateStr = new Date(
+                  post.frontmatter.publish_date,
+                ).toLocaleString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                });
+
+                let optimizedCoverImage: any = null;
+                let coverImageSrc: string = "";
+
+                if (cover) {
+                  const results = await postImageImport(cover);
+                  const dynamicImg = results?.default;
+
+                  optimizedCoverImage = cover
+                    ? await getImage({ src: dynamicImg, width: 1400 })
+                    : "";
+                  coverImageSrc = (optimizedCoverImage as any).src;
+                }
+
+              return (
+                <a
+                  href={`/blog/${post.frontmatter.slug}`}
+                  class={
+                    "post-link-container block mb-4 " +
+                    post.frontmatter.tags
+                      .map((tag) => `post-link-tag-${tag.id}`)
+                      .join(" ")
+                  }
+                >
+                  <article class="h-fit transform rounded-lg border border-gray-200 bg-white shadow-md transition duration-100 ease-in dark:border-gray-700 dark:bg-gray-950 sm:hover:scale-[102%] lg:hover:scale-105">
+                    <div
+                      style="display:block"
+                      transition:name={`cover-image-${post.frontmatter.id}`}
+                      transition:animate="none"
+                    >
+                      {optimizedCoverImage && (
+                          <img
+                            class={`mb-1 h-auto w-full rounded-md rounded-b-none object-cover`}
+                            style={`aspect-ratio: 13/9`}
+                            src={coverImageSrc}
+                            alt="cover"
+                          />
+                        )}
+                    </div>
+                    <div
+                      class="p-4"
+                      transition:name={`cover-title-${post.frontmatter.id}`}
+                    >
+
+                      <h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                        {post.frontmatter.title}
+                      </h2>
+
+                      <p
+                        class="mb-4 whitespace-pre-line font-light text-gray-500 dark:text-gray-400"
+                        set:html={
+                          post.frontmatter.description !== "undefined"
+                            ? post.frontmatter.description
+                            : ""
+                        }
+                      />
+                    </div>
+                  </article>
+                </a>
+              );
+            })
+        }
       </main>
-      
-      <footer>
-        
-      </footer>
-    </div>
-  </body>
-</html>
+</Layout>

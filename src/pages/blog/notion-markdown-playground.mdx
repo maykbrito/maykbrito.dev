@@ -1,0 +1,171 @@
+---
+layout: "../../layouts/PostLayout.astro"
+id: "f863d55c-e518-41f5-993a-5b6e410d9313"
+slug: "notion-markdown-playground"
+title: "Notion Markdown Playground"
+cover: "/Users/maykbrito/Works/Astro/blog-shadcnui/src/images/posts/b66f8d47a95064a61bd5e9ddc25aeebaa5356679bac5ceca7d3e26ef797f58c6-cover.jpg"
+tags: [{"id":"4b39708a-68e0-4cfa-b41a-504411991bec","name":"Example","color":"green"},{"id":"4cde291b-ecb5-423e-be06-f0c133aeed53","name":"Tutorial","color":"brown"},{"id":"ad62e360-f369-4876-8be4-98844d48e4f8","name":"Playground","color":"red"}]
+created_time: 2023-12-28T14:30:00.000Z
+last_edited_time: 2023-12-29T02:45:00.000Z
+icon: null
+archived: false
+status: "published"
+publish_date: 2023-10-29
+description: "Click here to test out a Notion Playground testing out Markdown formatting features from bold and italic to images, headers, and embeds"
+reading_time: "3 min read"
+---
+import Image from '../../components/Image.astro';
+
+<div class="blog-content">
+
+Markdown is a lightweight markup language that allows you to easily format text using simple and intuitive syntax. It has become incredibly popular among writers, developers, and content creators due to its simplicity and versatility. It is supported by Notion, and is used by AstroNot to render Notion webpages.
+
+
+Below is a test for a variety of Notion formatting options:
+
+
+# Markdown Features
+
+
+## Formatting
+
+
+Markdown provides several ways to format your text. You can make text **bold** by enclosing it in double asterisks or double underscores. Similarly, you can make text _italic_ by enclosing it in single asterisks or single underscores. For example, `**bold**` becomes **bold** and `*italic*` becomes _italic_.
+
+
+## Text Examples
+
+
+Strikethrough: ~~Strikethrough Text~~
+
+
+Underline: <u>Underlined Text</u>
+
+
+Bold: **Bold**
+
+
+Italic: _Italic_
+
+
+`Highlighted Text using Backticks`
+
+
+### Quote
+
+
+> Mars is there, waiting to be reached. – Buzz Aldrin
+
+
+### Divider
+
+
+---
+
+
+# Headers
+
+
+Markdown allows you to create headers of different levels. You can create a first-level header using a single `#`, a second-level header using two `##`, and so on. Notion supports **THREE** heading levels. For example:
+
+
+# Level 1 header
+
+
+## Level 2 header
+
+
+### Level 3 header
+
+
+# Lists
+
+
+Markdown supports both ordered and unordered lists. To create an ordered list, simply prefix each item with a number followed by a period. For unordered lists, use a hyphen or an asterisk. For example:
+
+1. First item
+2. Second item
+	1. First subitem
+	2. Second subitem
+	3. Third subitem
+3. Third item
+- Unordered item
+- Unordered item
+	- First subitem
+	- Second subitem
+	- Third subitem
+- Unordered item
+
+## Highlighted Text
+
+
+Markdown allows you to highlight text using backticks. This is useful when referring to code or emphasizing specific terms. For example, `highlighted text` is rendered as highlighted text.
+
+
+## Code Blocks
+
+
+Markdown provides a way to display code blocks with syntax highlighting. Simply wrap your code within triple backticks followed by the language name. 
+
+
+### Single-Line Code Blocks
+
+
+This is a `console.log('single line')` code block
+
+
+### Multi-Line Code Blocks
+
+
+```python
+def hyper_random():
+    #1. Print a random string of length 10
+    rand_string = ''.join(random.choices(string.ascii_uppercase + string.digits, k=10))
+    print("Random string: ", rand_string)
+    
+    #2. Calculate the sum of a list of 5 random integers between 1 and 20
+    rand_ints = [random.randint(1, 20) for _ in range(5)]
+    print("Random integer list: ", rand_ints)
+    print("Sum of random integers: ", sum(rand_ints))
+
+    #3. Create a list of 5 random True/False values
+    rand_bools = [bool(random.getrandbits(1)) for _ in range(5)]
+    print("Random boolean list: ", rand_bools)
+    
+    #4. Generate a random hexadecimal color code
+    rand_color = '#'+''.join([random.choice('0123456789ABCDEF') for _ in range(6)])
+    print("Random color code: ", rand_color)
+```
+
+
+# Images
+
+
+<Image src="/images/posts/8857e3902f9bf0760b12c0cf5a3d13ed289f3e161559e405cd18a4f9b9eba8ff.jpg" />
+
+
+<Image src="/images/posts/7950e4cdeae86e3118f3b65fe293ffd75d7a5cf22c1c66a14ab8b866e92ccd48.gif" />
+
+
+# Notion Features
+
+
+### Youtube Embed
+
+
+<iframe width="100%" height="480" src="https://www.youtube.com/embed/5lDSSgHG4q0?si=RtlqhAlqw3seEQ9p" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+
+### Callout
+
+
+> ✅ Callout
+
+
+### Web Bookmark
+
+
+[bookmark](http://www.google.com)
+
+
+</div>
