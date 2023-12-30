@@ -6,7 +6,7 @@ import config from '@/consts'
 import Header from '@/components/Header.astro';
 import Layout from "@/layouts/Layout.astro";
 import SearchBar from '@/components/SearchBar.astro';
-import PostCard from '@/components/PostCard.astro';
+import Posts from '@/components/Posts.tsx';
 
 const posts = await Astro.glob("./blog/*.mdx");
 const sortedPosts = await Promise.all(posts
@@ -47,7 +47,7 @@ const sortedPosts = await Promise.all(posts
       <SearchBar/>
 
       <main class="grid gap-2 my-10">
-        {sortedPosts.length > 0 && sortedPosts.map(async (post) => (<PostCard post={post} />))}
+        <Posts posts={sortedPosts} client:load/>
       </main>
     </div>
 </Layout>

@@ -37,12 +37,7 @@ const dateStr = new Date((frontmatter.publish_date! || frontmatter.created_time!
       <Header />
     </div>
 
-
-      <div
-        style="display:block"
-        transition:name={`cover-image-${frontmatter.id}`}
-        transition:animate="none"
-      >
+      <div style={`view-transition-name: cover-image-${frontmatter.id}`}>
         {
           optimizedDesktopCoverImage && (
             <div class="relative h-fit">
@@ -64,6 +59,7 @@ const dateStr = new Date((frontmatter.publish_date! || frontmatter.created_time!
             } bg-white dark:bg-gray-950 rounded-lg md:border lg:shadow-4xl lg:-mb-8 md:py-12 md:px-20
             `}
             transition:name={`cover-title-${frontmatter.id}`}
+            style={`view-transition-name: cover-title-${frontmatter.id}`}
           >
             <header class="not-format mb-4 lg:mb-6">
               <address class="mb-6 flex items-center not-italic">
