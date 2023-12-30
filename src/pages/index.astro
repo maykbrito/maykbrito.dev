@@ -3,7 +3,7 @@ import config from '@/consts'
 import Header from '@/components/Header.astro';
 import Layout from "@/layouts/Layout.astro";
 import { Button } from '@/components/ui/button';
-import { GithubIcon, InstagramIcon, TwitchIcon, YoutubeIcon } from 'lucide-react';
+import {GithubIcon, DiscordIcon, InstagramIcon, TwitchIcon, YoutubeIcon} from '@/components/Icons';
 import Me from '@/components/Me';
 
 const links = {
@@ -46,6 +46,11 @@ const links = {
       icon: YoutubeIcon,
     },
     {
+      url: 'discord.maykbrito.dev',
+      title: 'Discord',
+      icon: DiscordIcon,
+    },
+    {
       url: 'instagram.com/maykbrito',
       title: 'Instagram',
       icon: InstagramIcon,
@@ -86,17 +91,17 @@ const links = {
         }
       </main>
 
-      <footer class="flex gap-2 justify-center">
-        {links.social.map(link => (
-          <a href={`https://${link.url}`} target="_blank">
+        <footer class="flex gap-2 justify-center mb-20">
+          {links.social.map(link => (
+            <a href={`https://${link.url}`} target="_blank">
 
-            <Button variant='outline' className='w-16 h-16'>
-              <link.icon />
-              <p class="sr-only">{link.title}</p>
-            </Button>
-          </a>
-        ))}
-      </footer>
+              <Button variant='outline' className='w-16 h-16'>
+                <link.icon strokeWidth={1} />
+                <p class="sr-only">{link.title}</p>
+              </Button>
+            </a>
+          ))}
+        </footer>
       </div>
 
     </div>
