@@ -62,7 +62,7 @@ const links = {
 
 <Layout title={config.head.title} description={config.head.description} image={config.head.image}>
   
-  <div class="page max-w-xs mx-auto px-10 md:px-0 antialiased ">
+  <div class="page max-w-xs mx-auto px-2 md:px-0 antialiased ">
       <Header />
 
       <div class="grid gap-12">
@@ -91,14 +91,13 @@ const links = {
         }
       </main>
 
-        <footer class="flex gap-2 justify-center mb-20">
+        <footer class="flex flex-wrap gap-2 justify-center mb-20 ">
           {links.social.map(link => (
-            <a href={`https://${link.url}`} target="_blank">
-
-              <Button variant='outline' className='w-16 h-16'>
+            <a 
+            class="border rounded-md p-3"
+            href={`https://${link.url}`} target="_blank">
                 <link.icon strokeWidth={1} />
                 <p class="sr-only">{link.title}</p>
-              </Button>
             </a>
           ))}
         </footer>
