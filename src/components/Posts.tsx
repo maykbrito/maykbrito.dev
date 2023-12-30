@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import type { Post } from "@/lib/types";
+import Tags from "./Tags";
 
 export default function Posts({ ...props }) {
   const posts = props.posts;
@@ -22,7 +23,7 @@ export default function Posts({ ...props }) {
                 .join(" ")
             }
           >
-            <article className="h-fit transform rounded-lg border border-gray-200 bg-white shadow-md transition duration-100 ease-in dark:border-gray-700 dark:bg-gray-950 sm:hover:scale-[102%] lg:hover:scale-105">
+            <article className="transform rounded-lg border border-gray-200 bg-white shadow-md transition duration-100 ease-in dark:border-gray-700 dark:bg-gray-950 sm:hover:scale-[102%] lg:hover:scale-105">
               <div
                 style={{
                   viewTransitionName: `cover-image-${post.frontmatter.id}`,
@@ -56,15 +57,7 @@ export default function Posts({ ...props }) {
                     {post.frontmatter.dateStr} - {post.frontmatter.reading_time}
                   </small>
                   <div className="tags">
-                    <div className="flex gap-2">
-                      {post.frontmatter.tags.map((tag: { name: string }) => {
-                        return (
-                          <Badge key={tag.name} variant="outline">
-                            {tag.name}
-                          </Badge>
-                        );
-                      })}
-                    </div>
+                    <Tags tags={post.frontmatter.tags} />
                   </div>
                 </div>
               </div>

@@ -3,9 +3,9 @@ import { NotionToMarkdown } from "notion-to-md";
 import fs from 'fs';
 import readingTime from 'reading-time';
 import { parseArgs } from 'node:util';
-import { sanitizeUrl, sanitizeImageString } from './helpers/sanitize.mjs';
-import { downloadImage } from './helpers/images.mjs';
-import { delay } from './helpers/delay.mjs';
+import { sanitizeUrl, sanitizeImageString } from './lib/sanitize.mjs';
+import { downloadImage } from './lib/images.mjs';
+import { delay } from './lib/delay.mjs';
 import { config } from 'dotenv'
 
 // Input Arguments

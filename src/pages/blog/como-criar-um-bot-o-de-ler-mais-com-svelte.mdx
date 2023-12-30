@@ -1,0 +1,59 @@
+---
+layout: "../../layouts/PostLayout.astro"
+id: "853c7e9d-dc1f-4d3b-9bc5-0bc6b59fafa1"
+slug: "como-criar-um-bot-o-de-ler-mais-com-svelte"
+title: "Como criar um botão de ler mais com Svelte"
+cover: ""
+tags: [{"id":"4cde291b-ecb5-423e-be06-f0c133aeed53","name":"Tutorial","color":"brown"},{"id":"f90a6184-5adc-429f-97cf-e3fad4814b46","name":"Svelte","color":"default"},{"id":"364264e4-6017-49f0-8e76-19845f2d3eae","name":"Astro","color":"blue"}]
+created_time: 2023-12-30T18:38:00.000Z
+last_edited_time: 2023-12-30T19:10:00.000Z
+icon: null
+archived: false
+status: "published"
+publish_date: 2023-12-30
+description: "Vamos dar uma olhada num código que usa uma estratégia de carregar mais items com Svelte"
+reading_time: "1 min read"
+---
+import Image from '../../components/Image.astro';
+
+
+Eu precisei de algo parecido em um projeto usando Astro…
+Supondo que o componente receba 100 `posts`.
+
+
+`index.astro`
+
+
+```javascript
+---
+import Posts from '@/components/Posts.svelte'
+const posts = [] // 100 posts 
+---
+
+<Posts posts={posts} />
+```
+
+
+`Posts.svelte` 
+
+
+```javascript
+<script>
+  export let posts;
+  let currentItems = 2;
+</script>
+
+{#each posts.slice(0, currentItems) as post}
+	<h2>{post.title}</h2>
+{/each}
+
+{#if currentItems < posts.length}
+  <button
+    on:click={() => currentItems = currentItems + 2}
+    type="button">
+    Carregar Mais
+  </button>
+{/if}
+```
+
+

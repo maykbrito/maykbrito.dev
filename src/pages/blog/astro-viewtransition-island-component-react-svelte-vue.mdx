@@ -1,0 +1,58 @@
+---
+layout: "../../layouts/PostLayout.astro"
+id: "07004454-dba8-4b22-98f0-6e950f5a2af4"
+slug: "astro-viewtransition-island-component-react-svelte-vue"
+title: "Astro ViewTransition + Island Component (React, Svelte, Vue)"
+cover: "/Users/maykbrito/Works/Astro/blog-shadcnui/src/images/posts/a32fef4bbbdbef04f1751b27860bde3169b3b6e49e784d656c68791016a43e01-cover.png"
+tags: [{"id":"4cde291b-ecb5-423e-be06-f0c133aeed53","name":"Tutorial","color":"brown"}]
+created_time: 2023-12-30T18:31:00.000Z
+last_edited_time: 2023-12-30T19:26:00.000Z
+icon: null
+archived: false
+status: "published"
+publish_date: 2023-12-30
+description: "Neste arquivo vamos aprender a usar Astro ViewTransition dentro de um componente React, Svelte ou Vue, mantendo as transições super belas!"
+reading_time: "1 min read"
+---
+import Image from '../../components/Image.astro';
+
+
+## Entendendo o problema
+
+
+Uma das estratégias mais legais da ViewTransition API do [Astro](https://astro.build/), é a sacada da gente transicionar de um elemento em um página, para outro de mesmo ID em outra página, fazendo com que haja uma continuidade de transição, é muito bacana!
+
+
+Apesar de ser comum usarmos a propriedade `transition:name` em alguma tag dentro de arquivos `.astro`, essa estratégia não funciona se usarmos dentro de um componente como React, Svelte ou Vue. Veja
+
+
+```javascript
+/* src/pages/index.astro */
+<a href="/about" transition:name={`cover-title-${frontmatter.id}`}>Sobre mim</a>
+
+/* src/pages/about.astro */
+<h1 transition:name={`cover-title-${frontmatter.id}`}>Título</h1>
+```
+
+
+## Solução
+
+
+Para resolver é simples. Iremos utilizar a propriedade `view-transition-name` em um estilo dinâmico, veja:
+
+
+```javascript
+/* Imagina que o código abaixo esteja dentro de um component React, por exemplo */
+<div style={`view-transition-name: cover-title-${frontmatter.id}`}>Título</div>
+
+/* src/pages/about.astro */
+<h1 style={`view-transition-name: cover-title-${id}`}>Título</h1>
+```
+
+
+## Referência
+
+
+[https://github.com/withastro/astro/issues/8983](https://github.com/withastro/astro/issues/8983)
+
+

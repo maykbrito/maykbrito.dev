@@ -10,12 +10,11 @@ const {
   headings,
   olClass = "leading-tight",
   aClass = "no-underline dark:text-gray-400",
-  cardClass = "format -mt-8 h-fit w-fit",
+  cardClass = "format -mt-8 w-fit",
 } = Astro.props;
 const tableOfContents = generateTOC(headings);
 
-function generateTOC(
-  headings,
+function generateTOC(headings,
   options = {
     olClass,
     aClass,

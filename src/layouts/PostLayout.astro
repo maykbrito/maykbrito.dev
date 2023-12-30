@@ -1,7 +1,7 @@
 ---
 import { getImage } from "astro:assets";
-import { postImageImport } from "@/helpers/images.mjs";
-import Tags from "@/components/Tags.astro";
+import { postImageImport } from "@/lib/images.mjs";
+import Tags from "@/components/Tags";
 import ParallaxImageHeader from "@/components/ParallaxImageHeader.svelte";
 import TableOfContents from "@/components/TableOfContents.astro";
 import Header from "@/components/Header.astro";
@@ -40,7 +40,7 @@ const dateStr = new Date((frontmatter.publish_date! || frontmatter.created_time!
       <div style={`view-transition-name: cover-image-${frontmatter.id}`}>
         {
           optimizedDesktopCoverImage && (
-            <div class="relative h-fit">
+            <div class="relative">
               <ParallaxImageHeader
                 mobileImage={optimizedMobileCoverImage.src}
                 desktopImage={optimizedDesktopCoverImage.src}
@@ -69,7 +69,7 @@ const dateStr = new Date((frontmatter.publish_date! || frontmatter.created_time!
                   <img
                     class="mr-4 h-16 w-16 rounded-full"
                     src="/me.png"
-                    alt="Fizzbuzz Aldrin"
+                    alt="Mayk Brito"
                   />
                   {
                     showProfileSubtitle ? (
@@ -125,7 +125,7 @@ const dateStr = new Date((frontmatter.publish_date! || frontmatter.created_time!
               <Tags tags={frontmatter.tags} />
             </header>
 
-            <div class="blog-content prose md:prose-md lg:prose-lg xl:prose-xl dark:prose-invert prose-a:text-yellow-500 prose-img:rounded-xl">
+            <div class="blog-content prose md:prose-md lg:prose-lg xl:prose-xl dark:prose-invert prose-a:text-yellow-500 prose-img:rounded-xl dark:prose-code:text-gray-800 prose-pre:my-1">
               <slot />
             </div>
           </article>
@@ -135,7 +135,7 @@ const dateStr = new Date((frontmatter.publish_date! || frontmatter.created_time!
               <aside class="hidden lg:block lg:w-[350px]">
                 <TableOfContents
                   headings={Astro.props.headings}
-                  cardClass="format -mt-8 h-fit w-fit sticky top-4 w-full"
+                  cardClass="format -mt-8 w-fit sticky top-4 w-full"
                 />
               </aside>
             )
@@ -152,3 +152,9 @@ const dateStr = new Date((frontmatter.publish_date! || frontmatter.created_time!
 <script is:inline>
 	mediumZoom('.blog-content > img')
 </script>
+
+<style is:global>
+  code {
+    @apply bg-yellow-500;
+  }
+</style>
