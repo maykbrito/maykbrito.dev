@@ -1,6 +1,6 @@
-# Blog Shadch UI
+# Blog Astro + Shadcn UI + Notion API
 
 - ✅ Astro
-- ✅ Shadch UI
+- ✅ Shadcn UI
 - ✅ Notion API
 - ✅ Medium's Image Zoom
