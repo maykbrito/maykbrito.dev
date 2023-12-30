@@ -5,6 +5,7 @@ import config from '@/consts'
 import Header from '@/components/Header.astro';
 import Layout from "@/layouts/Layout.astro";
 import { postImageImport } from "@/helpers/images.mjs";
+import SearchBar from '@/components/SearchBar.astro';
 
 const posts = await Astro.glob("./blog/*.mdx");
 ---
@@ -13,17 +14,17 @@ const posts = await Astro.glob("./blog/*.mdx");
     <Header />
     <div class="page max-w-2xl mx-auto px-10 md:px-0">  
       
-      
+      <SearchBar/>
 
-      <main class="md:columns-2 gap-4 my-20">
+      <main class="md:columns-2 gap-4 my-10">
         {
           posts.length > 0 && posts
             .map(async (post) => {
 
               const { cover, title } = post?.frontmatter;
                 const dateStr = new Date(
-                  post.frontmatter.publish_date,
-                ).toLocaleString("en-US", {
+                  (post.frontmatter.publish_date! || post.frontmatter.created_time!),
+                ).toLocaleString("pt-BR", {
                   month: "short",
                   day: "numeric",
                   year: "numeric",
@@ -48,7 +49,7 @@ const posts = await Astro.glob("./blog/*.mdx");
                   class={
                     "post-link-container block mb-4 " +
                     post.frontmatter.tags
-                      .map((tag) => `post-link-tag-${tag.id}`)
+                      .map((tag: {id:string}) => `post-link-tag-${tag.id}`)
                       .join(" ")
                   }
                 >
@@ -84,6 +85,7 @@ const posts = await Astro.glob("./blog/*.mdx");
                             : ""
                         }
                       />
+                      <small class="text-gray-500 dark:text-gray-500">{dateStr}</small>
                     </div>
                   </article>
                 </a>

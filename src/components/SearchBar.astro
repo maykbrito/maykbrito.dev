@@ -1,0 +1,8 @@
+---
+import Search from '@/components/Search';
+const posts = await Astro.glob("../pages/blog/*.mdx");
+---
+
+<div id="search">
+  <Search client:load searchList={posts} />
+</div>
