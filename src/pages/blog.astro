@@ -10,10 +10,10 @@ import Posts from '@/components/Posts.tsx';
 
 const posts = await Astro.glob("./blog/*.mdx");
 const sortedPosts = await Promise.all(posts
-  .toSorted((a, b) => 
+  .sort((a, b) => 
     +new Date((a.frontmatter.publish_date! || a.frontmatter.created_time!)) - 
     +new Date((b.frontmatter.publish_date! || b.frontmatter.created_time!)))
-  .toReversed()
+  .reverse()
   .map(async (post) => {
     const { cover } = post?.frontmatter;
     post.frontmatter.dateStr = new Date(
