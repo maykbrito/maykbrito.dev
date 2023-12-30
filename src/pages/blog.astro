@@ -1,97 +1,53 @@
 ---
 import { getImage } from 'astro:assets';
+import { postImageImport } from "@/helpers/images.mjs";
 
 import config from '@/consts'
 import Header from '@/components/Header.astro';
 import Layout from "@/layouts/Layout.astro";
-import { postImageImport } from "@/helpers/images.mjs";
 import SearchBar from '@/components/SearchBar.astro';
+import PostCard from '@/components/PostCard.astro';
 
 const posts = await Astro.glob("./blog/*.mdx");
----
+const sortedPosts = await Promise.all(posts
+  .toSorted((a, b) => 
+    +new Date((a.frontmatter.publish_date! || a.frontmatter.created_time!)) - 
+    +new Date((b.frontmatter.publish_date! || b.frontmatter.created_time!)))
+  .toReversed()
+  .map(async (post) => {
+    const { cover } = post?.frontmatter;
+    post.frontmatter.dateStr = new Date(
+      (post.frontmatter.publish_date! || post.frontmatter.created_time!),
+    ).toLocaleString("pt-BR", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
 
+    post.frontmatter.optimizedCoverImage = null;
+    post.frontmatter.coverImageSrc = "";
+
+    if (cover) {
+      const results = await postImageImport(cover);
+      const dynamicImg = results?.default;
+
+      post.frontmatter.optimizedCoverImage = cover
+        ? await getImage({ src: dynamicImg, width: 1400 })
+        : "";
+      post.frontmatter.coverImageSrc = (post.frontmatter.optimizedCoverImage as any).src;
+    }
+
+    return post
+  }))
+---
 <Layout title={`${config.head.title} | Blog`} description="Escrevo sempre que possível para lembrar, explicar e aperfeiçoar o aprendizado de conceitos da programação WEB" image={config.head.image}>
     <Header />
-    <div class="page max-w-2xl mx-auto px-10 md:px-0">  
+    <div class="page max-w-lg mx-auto px-10 md:px-0">  
       
       <SearchBar/>
 
-      <main class="md:columns-2 gap-4 my-10">
-        {
-          posts.length > 0 && posts
-            .map(async (post) => {
-
-              const { cover, title } = post?.frontmatter;
-                const dateStr = new Date(
-                  (post.frontmatter.publish_date! || post.frontmatter.created_time!),
-                ).toLocaleString("pt-BR", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                });
-
-                let optimizedCoverImage: any = null;
-                let coverImageSrc: string = "";
-
-                if (cover) {
-                  const results = await postImageImport(cover);
-                  const dynamicImg = results?.default;
-
-                  optimizedCoverImage = cover
-                    ? await getImage({ src: dynamicImg, width: 1400 })
-                    : "";
-                  coverImageSrc = (optimizedCoverImage as any).src;
-                }
-
-              return (
-                <a
-                  href={`/blog/${post.frontmatter.slug}`}
-                  class={
-                    "post-link-container block mb-4 " +
-                    post.frontmatter.tags
-                      .map((tag: {id:string}) => `post-link-tag-${tag.id}`)
-                      .join(" ")
-                  }
-                >
-                  <article class="h-fit transform rounded-lg border border-gray-200 bg-white shadow-md transition duration-100 ease-in dark:border-gray-700 dark:bg-gray-950 sm:hover:scale-[102%] lg:hover:scale-105">
-                    <div
-                      style="display:block"
-                      transition:name={`cover-image-${post.frontmatter.id}`}
-                      transition:animate="none"
-                    >
-                      {optimizedCoverImage && (
-                          <img
-                            class={`mb-1 h-auto w-full rounded-md rounded-b-none object-cover`}
-                            style={`aspect-ratio: 13/9`}
-                            src={coverImageSrc}
-                            alt="cover"
-                          />
-                        )}
-                    </div>
-                    <div
-                      class="p-4"
-                      transition:name={`cover-title-${post.frontmatter.id}`}
-                    >
-
-                      <h2 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                        {post.frontmatter.title}
-                      </h2>
-
-                      <p
-                        class="mb-4 whitespace-pre-line font-light text-gray-500 dark:text-gray-400"
-                        set:html={
-                          post.frontmatter.description !== "undefined"
-                            ? post.frontmatter.description
-                            : ""
-                        }
-                      />
-                      <small class="text-gray-500 dark:text-gray-500">{dateStr}</small>
-                    </div>
-                  </article>
-                </a>
-              );
-            })
-        }
+      <main class="grid gap-2 my-10">
+        {sortedPosts.length > 0 && sortedPosts.map(async (post) => (<PostCard post={post} />))}
       </main>
     </div>
 </Layout>
