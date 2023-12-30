@@ -10,18 +10,23 @@ const links = {
   primary: [
     { 
       url: 'discover.maykbrito.dev',
-      title: 'Discover',
-      description: 'Curso de programação WEB gratuito'
+      title: 'Discover (gratuito)',
+      description: '+5h de curso de programação WEB para iniciantes'
     },
     {
-      url: 'rocketseat.com.br',
+      url: 'one.maykbrito.dev',
       title: 'Rocketseat',
-      description: 'Formação em programação WEB'
+      description: 'Formação completa em programação WEB'
     },
     {
-      url: 'seo.maykbrito.dev',
-      title: 'SEO para Devs',
-      description: 'Curso de SEO para DEVs'
+      url: 'masterclassjs.maykbrito.dev',
+      title: 'Masterclass de JavaScript',
+      description: 'Domine os fundamentos de JavaScript'
+    },
+    {
+      url: 'biblioteca.maykbrito.dev',
+      title: '+20 Cursos (gratuitos)',
+      description: 'Cursos de HTML, CSS, JS, Node, SQL, etc...'
     }
   ],
   social: [
@@ -52,8 +57,11 @@ const links = {
 
 <Layout title={config.head.title} description={config.head.description} image={config.head.image}>
   
-  <div class="page max-w-xs mx-auto px-10 md:px-0 antialiased grid gap-12">
+  <div class="page max-w-xs mx-auto px-10 md:px-0 antialiased ">
       <Header />
+
+      <div class="grid gap-12">
+    
       <div class="text-center">
         <Me className="mx-auto w-32 h-32" />
         <div class="mb-2 mt-4 text-lg font-medium">@maykbrito</div>
@@ -89,6 +97,7 @@ const links = {
           </a>
         ))}
       </footer>
+      </div>
 
     </div>
 </Layout>
