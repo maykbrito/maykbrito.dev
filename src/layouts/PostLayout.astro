@@ -6,6 +6,7 @@ import ParallaxImageHeader from "@/components/ParallaxImageHeader.svelte";
 import TableOfContents from "@/components/TableOfContents.astro";
 import Header from "@/components/Header.astro";
 import Layout from "./Layout.astro";
+import SocialShare from "@/components/SocialShare.astro";
 
 const { frontmatter } = Astro.props;
 
@@ -25,136 +26,153 @@ if (frontmatter?.cover) {
     : "";
 }
 
-const dateStr = new Date((frontmatter.publish_date! || frontmatter.created_time!)).toLocaleString("pt-BR", {
+const dateStr = new Date(
+  frontmatter.publish_date! || frontmatter.created_time!
+).toLocaleString("pt-BR", {
   month: "short",
   day: "numeric",
   year: "numeric",
 });
 ---
-<Layout title={frontmatter.title} description={frontmatter.description} image={frontmatter.cover}>
+<Layout
+  title={frontmatter.title}
+  description={frontmatter.description}
+  image={frontmatter.cover}
+>
+  <div class="px-10 md:px-0">
+    <Header />
+  </div>
 
-    <div class="px-10 md:px-0">
-      <Header />
-    </div>
+  <div style={`view-transition-name: cover-image-${frontmatter.id}`}>
+    {
+      optimizedDesktopCoverImage && (
+        <div class="relative">
+          <ParallaxImageHeader
+            mobileImage={optimizedMobileCoverImage.src}
+            desktopImage={optimizedDesktopCoverImage.src}
+            client:idle
+          />
+        </div>
+      )
+    }
+  </div>
 
-      <div style={`view-transition-name: cover-image-${frontmatter.id}`}>
-        {
-          optimizedDesktopCoverImage && (
-            <div class="relative">
-              <ParallaxImageHeader
-                mobileImage={optimizedMobileCoverImage.src}
-                desktopImage={optimizedDesktopCoverImage.src}
-                client:idle
-              />
-            </div>
-          )
-        }
-      </div>
-
-      <main class="pt-8 antialiased lg:pt-16 mb-20">
-        <div class="mx-auto flex max-w-screen-xl justify-center gap-12 px-4">
-          <article
-            class={`w-full format format-sm sm:format-base lg:format-lg format-blue dark:format-invert overflow-x-hidden ${
-              frontmatter.cover ? "lg:my-[-128px]" : ""
-            } bg-white dark:bg-gray-950 rounded-lg md:border lg:shadow-4xl lg:-mb-8 md:py-12 md:px-20
+  <main class="pt-8 antialiased lg:pt-16 mb-20">
+    <div class={`mx-auto flex ${Astro.props.headings.length == 0 ? 'max-w-4xl' : 'max-w-screen-xl'} justify-center gap-12 px-4`}>
+      <article
+        class={`w-full format format-sm sm:format-base lg:format-lg format-blue dark:format-invert overflow-x-hidden ${
+          frontmatter.cover ? "lg:my-[-128px]" : ""
+        } bg-white dark:bg-gray-950 rounded-lg md:border lg:shadow-4xl lg:-mb-8 md:py-12 md:px-20
             `}
-            transition:name={`cover-title-${frontmatter.id}`}
-            style={`view-transition-name: cover-title-${frontmatter.id}`}
-          >
-            <header class="not-format mb-4 lg:mb-6">
-              <address class="mb-6 flex items-center not-italic">
-                <div
-                  class="mr-3 inline-flex items-center text-sm text-gray-900 dark:text-white"
-                >
-                  <img
-                    class="mr-4 h-16 w-16 rounded-full"
-                    src="/me.png"
-                    alt="Mayk Brito"
-                  />
-                  {
-                    showProfileSubtitle ? (
-                      <div>
-                        <a
-                          href="#"
-                          rel="author"
-                          class="text-xl font-bold text-gray-900 dark:text-white"
-                        >
-                          Mayk Brito
-                        </a>
-                        <p class="text-base text-gray-500 dark:text-gray-400">
-                          Instrutor & CCO @Rocketseat
-                        </p>
-                        <p class="text-base text-gray-500 dark:text-gray-400">
-                          <time
-                            datetime={frontmatter.created_time}
-                            title={dateStr}
-                          >
-                            {dateStr}
-                          </time>
-                        </p>
-                      </div>
-                    ) : (
-                      <div>
-                        <a
-                          href="#"
-                          rel="author"
-                          class="text-2xl font-bold text-gray-900 dark:text-white"
-                        >
-                          Mayk Brito
-                        </a>
-                        <p class="text-lg text-gray-500 dark:text-gray-400">
-                          <time
-                            datetime={frontmatter.created_time}
-                            title={dateStr}
-                          >
-                            {dateStr}
-                          </time>
-                        </p>
-                      </div>
-                    )
-                  }
-                </div>
-              </address>
-
-              <div
-                class="mb-4 text-4xl font-extrabold leading-tight text-gray-900 dark:text-white sm:text-[2.66rem] lg:mb-6 lg:text-[3.33rem]"
-              >
-                {frontmatter.title}
-              </div>
-
-              <Tags tags={frontmatter.tags} />
-            </header>
-
-            <div class="blog-content prose md:prose-md lg:prose-lg xl:prose-xl dark:prose-invert prose-a:text-yellow-500 prose-img:rounded-xl dark:prose-code:text-gray-800 prose-pre:my-1">
-              <slot />
+        transition:name={`cover-title-${frontmatter.id}`}
+        style={`view-transition-name: cover-title-${frontmatter.id}`}
+      >
+        <header class="not-format mb-4 lg:mb-6">
+          <address class="mb-6 flex items-center not-italic">
+            <div
+              class="mr-3 inline-flex items-center text-sm text-gray-900 dark:text-white"
+            >
+              <img
+                class="mr-4 h-16 w-16 rounded-full"
+                src="/me.png"
+                alt="Mayk Brito"
+              />
+              {
+                showProfileSubtitle ? (
+                  <div>
+                    <a
+                      href="#"
+                      rel="author"
+                      class="text-xl font-bold text-gray-900 dark:text-white"
+                    >
+                      Mayk Brito
+                    </a>
+                    <p class="text-base text-gray-500 dark:text-gray-400">
+                      Instrutor & CCO @Rocketseat
+                    </p>
+                    <p class="text-base text-gray-500 dark:text-gray-400">
+                      <time datetime={frontmatter.created_time} title={dateStr}>
+                        {dateStr}
+                      </time>
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <a
+                      href="#"
+                      rel="author"
+                      class="text-2xl font-bold text-gray-900 dark:text-white"
+                    >
+                      Mayk Brito
+                    </a>
+                    <p class="text-lg text-gray-500 dark:text-gray-400">
+                      <time datetime={frontmatter.created_time} title={dateStr}>
+                        {dateStr}
+                      </time>
+                    </p>
+                  </div>
+                )
+              }
             </div>
-          </article>
+          </address>
 
-          {
-            Astro.props.headings.length > 0 && (
-              <aside class="hidden lg:block lg:w-[350px]">
-                <TableOfContents
-                  headings={Astro.props.headings}
-                  cardClass="format -mt-8 w-fit sticky top-4 w-full"
-                />
-              </aside>
-            )
-          }
+          <div
+            class="mb-4 text-4xl font-extrabold leading-tight text-gray-900 dark:text-white sm:text-[2.66rem] lg:mb-6 lg:text-[3.33rem]"
+          >
+            {frontmatter.title}
+          </div>
+
+          <Tags tags={frontmatter.tags} />
+        </header>
+
+        <div
+          class={`
+          blog-content
+          prose md:prose-md lg:prose-lg xl:prose-xl dark:prose-invert 
+          prose-a:text-orange-400
+          dark:prose-a:text-yellow-500
+          dark:hover:prose-a:text-yellow-300
+          prose-img:rounded-xl 
+          prose-code:font-normal
+          prose-code:text-orange-500 
+          dark:prose-code:text-yellow-400
+          prose-pre:my-1 
+          `}
+        >
+          <slot />
         </div>
 
-        <!-- latest posts here -->
-      </main>
+        <!-- Social Share -->
+        <SocialShare
+          title={frontmatter.title}
+          description={frontmatter.description}
+          image={frontmatter.cover}
+        />
+      </article>
 
+      {
+        Astro.props.headings.length > 0 && (
+          <aside class="hidden lg:block lg:w-[350px]">
+            <TableOfContents
+              headings={Astro.props.headings}
+              cardClass="format -mt-8 w-fit sticky top-4 w-full"
+            />
+          </aside>
+        )
+      }
+    </div>
 
+    <!-- latest posts here -->
+  </main>
 </Layout>
 
 <script is:inline src="/medium-zoom.min.js"></script>
 <script is:inline>
-	mediumZoom('.blog-content > img')
+  mediumZoom(".blog-content > img");
 </script>
 
 <style is:global>
   code {
-    @apply bg-yellow-500;
+    @apply dark:bg-gray-700 rounded px-2 bg-orange-50;
   }
 </style>
