@@ -46,8 +46,8 @@ const { title, description, image="/me.png" } = Astro.props;
     <meta property="twitter:image" content={new URL(image, Astro.url)} />
     <ViewTransitions />
   </head>
-  <body>
-    <div class="page" style="padding-left: calc(100vw - 100%);">  
+  <body style="overflow-y:scroll">
+    <div class="page">  
       <ModeToggle className="top-6 right-6 absolute" client:only="react" />
       <slot/>
     </div>

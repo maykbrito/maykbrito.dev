@@ -3,28 +3,38 @@ layout: "../../layouts/PostLayout.astro"
 id: "853c7e9d-dc1f-4d3b-9bc5-0bc6b59fafa1"
 slug: "como-criar-um-bot-o-de-ler-mais-com-svelte"
 title: "Como criar um botão de ler mais com Svelte"
-cover: ""
-tags: [{"id":"4cde291b-ecb5-423e-be06-f0c133aeed53","name":"Tutorial","color":"brown"},{"id":"f90a6184-5adc-429f-97cf-e3fad4814b46","name":"Svelte","color":"default"},{"id":"364264e4-6017-49f0-8e76-19845f2d3eae","name":"Astro","color":"blue"}]
+cover: "/Users/maykbrito/Works/Astro/blog-shadcnui/src/images/posts/d1c88f049a7345840ba733777f67ee2831e83e3c12c45d3776cf61018a70985d-cover.png"
+tags: [{"id":"f90a6184-5adc-429f-97cf-e3fad4814b46","name":"Svelte","color":"default"},{"id":"364264e4-6017-49f0-8e76-19845f2d3eae","name":"Astro","color":"blue"}]
 created_time: 2023-12-30T18:38:00.000Z
-last_edited_time: 2023-12-30T19:10:00.000Z
+last_edited_time: 2023-12-31T19:07:00.000Z
 icon: null
 archived: false
 status: "published"
 publish_date: 2023-12-30
 description: "Vamos dar uma olhada num código que usa uma estratégia de carregar mais items com Svelte"
-reading_time: "1 min read"
+reading_time: "2 min read"
 ---
 import Image from '../../components/Image.astro';
 
 
-Eu precisei de algo parecido em um projeto usando Astro…
-Supondo que o componente receba 100 `posts`.
+## A necessidade
 
 
-`index.astro`
+Eu estava buscando uma maneira de criar um componente de “ler mais” para fazer o carregamento de conteúdo conforme a pessoa clique em um botão.
+
+
+A stack do momento é o [Astro.build](http://astro.build/) mas eu estava querendo uma solução com o [Svelte](http://svelte.dev/) dentro do Astro e cheguei a essa conclusão, apesar de ter escolhido refazer com [React](http://react.dev/) mesmo 😅
+
+
+
+## O cenário
+
+
+Supondo que o componente `Posts` receba um `array` com 100 `posts` e queira carregar de 2 em 2, teríamos algo semelhante a isso:
 
 
 ```javascript
+// index.astro
 ---
 import Posts from '@/components/Posts.svelte'
 const posts = [] // 100 posts 
@@ -34,10 +44,8 @@ const posts = [] // 100 posts
 ```
 
 
-`Posts.svelte` 
-
-
 ```javascript
+// @/components/Posts.svelte
 <script>
   export let posts;
   let currentItems = 2;
@@ -55,5 +63,16 @@ const posts = [] // 100 posts
   </button>
 {/if}
 ```
+
+
+Pontos principais
+
+- `export let posts` no Svelte é a maneira de passar propriedades ao componente
+- `{#each}` é a maneira de usar loop na parte de templates do Svelte
+- `posts.slice(0, currentItems)` com o javascript eu defino o número de elementos de um array que eu quero
+- `{#if}` é a maneira de usar condicionais num template Svelte
+- `on:click` é a maneira de usar Event Listeners em um template Svelte
+
+<Image src="/images/posts/decf3ae4858430515c48f283663ac4cf3d170bc8fc3e7682c1d39219a879958e.gif" />
 
 
