@@ -47,7 +47,7 @@ n2m.setCustomTransformer("embed", async (block) => {
 });
 
 n2m.setCustomTransformer("image", async (block) => {
-  const { image, id } = block;
+  const { image } = block;
   const imageUrl = image?.file?.url || image?.external?.url;
   const imageFileName = sanitizeImageString(imageUrl.split('/').pop());
   const filePath = await downloadImage(imageUrl, `./images/${imageFileName}`);
@@ -58,7 +58,7 @@ n2m.setCustomTransformer("image", async (block) => {
 
 n2m.setCustomTransformer("video", async (block) => {
   const { video } = block;
-  const { caption, type, external: { url: videoUrl } } = video;
+  const { external: { url: videoUrl } } = video;
 
   let url = videoUrl;
 

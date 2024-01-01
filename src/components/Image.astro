@@ -6,14 +6,13 @@ const {
   src,
   MAX_WIDTH = 1400, // 2x max width of blog section width (2x for retina devices). Max width on Medium is 680px, so target that as max width for articles.
   imageClass = "w-full bg-gray-100",
-  source = "internal", // Switch between internal relative URLs and external link sources
   alt = "Blog Image",
 } = Astro.props;
 
 const relativeSrc = `../${src}`;
 const imgType = relativeSrc.split(".").pop();
 const { default: imgData } = await postImageImport(src);
-const { width, height, src: imgSrc } = imgData;
+const { width, height } = imgData;
 ---
 
 {
