@@ -4,9 +4,20 @@ import Header from '@/components/Header.astro';
 import Layout from "@/layouts/Layout.astro";
 import {GithubIcon, DiscordIcon, InstagramIcon, TwitchIcon, YoutubeIcon} from '@/components/Icons';
 import Me from '@/components/Me';
+import { cn } from '@/lib/utils';
 
 const links = {
   primary: [
+    {
+      url: "https://www.rocketseat.com.br/eventos/python?utm_source=mayk&utm_medium=organic&utm_campaign=lead&utm_term=evento-nova-trilha&utm_content=pagevento-lp_evento_python_inscricao",
+      title: "Python na @Rocketseat",
+      description: "Inscreva-se no evento gratuito que irá apresentar a novidade dia 15/01",
+      colors: {
+        'background': 'bg-gradient-to-br from-sky-400 to-amber-200',
+        'title': 'text-black',
+        'description': 'text-gray-800'
+      }
+    },
     { 
       url: 'discover.maykbrito.dev',
       title: 'Discover (gratuito)',
@@ -80,11 +91,11 @@ const links = {
         {
           links.primary.map(async (link) => (
             <a 
-              class="border rounded border-gray-300 p-4 hover:bg-gray-100 dark:hover:bg-gray-800 dark:border-gray-800" 
+              class={cn(`border rounded border-gray-300 p-4 hover:bg-gray-100 dark:hover:bg-gray-800 dark:border-gray-800`, link.colors?.background)}
               href={`https://${link.url}`} 
               target="_blank">
-              <strong class="font-bold text-lg">{link.title}</strong>
-              <p class="text-muted-foreground">{link.description}</p>
+              <strong class={cn(`font-bold text-lg`, link.colors?.title)}>{link.title}</strong>
+              <p class={cn("text-muted-foreground", link.colors?.description)}>{link.description}</p>
             </a>
           ))
         }
