@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils';
 const links = {
   primary: [
     {
-      url: "www.rocketseat.com.br/eventos/nlw?utm_source=mayk&utm_medium=organic&utm_campaign=lead&utm_term=evento-nlw&utm_content=pagevento-lp_evento_nlw_expert_inscricao",
+      url: "https://www.rocketseat.com.br/eventos/nlw?utm_source=mayk&utm_medium=organic&utm_campaign=lead&utm_term=evento-nlw&utm_content=pagevento-lp_evento_nlw_expert_inscricao",
       title: "NLW @Rocketseat",
       description: "Inscreva-se no evento gratuito - Next Level Week",
       colors: {
@@ -19,49 +19,49 @@ const links = {
       }
     },
     { 
-      url: 'discover.maykbrito.dev',
+      url: 'https://discover.maykbrito.dev',
       title: 'Discover (gratuito)',
       description: '+5h de curso de programação WEB para iniciantes'
     },
     {
-      url: 'one.maykbrito.dev',
+      url: 'https://one.maykbrito.dev',
       title: 'Rocketseat',
       description: 'Formação completa em programação WEB'
     },
     {
-      url: 'masterclassjs.maykbrito.dev',
+      url: 'https://masterclassjs.maykbrito.dev',
       title: 'Masterclass de JavaScript',
       description: 'Domine os fundamentos de JavaScript'
     },
     {
-      url: 'biblioteca.maykbrito.dev',
+      url: 'https://biblioteca.maykbrito.dev',
       title: '+20 Cursos (gratuitos)',
       description: 'Cursos de HTML, CSS, JS, Node, SQL, etc...'
     }
   ],
   social: [
     {
-      url: 'github.com/maykbrito',
+      url: 'https://github.com/maykbrito',
       title: 'Github',
       icon: GithubIcon,
     },
     {
-      url: 'twitch.tv/maykbrito',
+      url: 'https://twitch.tv/maykbrito',
       title: 'Twitch',
       icon: TwitchIcon,
     },
     {
-      url: 'youtube.com/maykbrito',
+      url: 'https://youtube.com/maykbrito',
       title: 'Youtube',
       icon: YoutubeIcon,
     },
     {
-      url: 'discord.maykbrito.dev',
+      url: 'https://discord.maykbrito.dev',
       title: 'Discord',
       icon: DiscordIcon,
     },
     {
-      url: 'instagram.com/maykbrito',
+      url: 'https://instagram.com/maykbrito',
       title: 'Instagram',
       icon: InstagramIcon,
     }
@@ -92,7 +92,7 @@ const links = {
           links.primary.map(async (link) => (
             <a 
               class={cn(`border rounded border-gray-300 p-4 hover:bg-gray-100 dark:hover:bg-gray-800 dark:border-gray-800`, link.colors?.background)}
-              href={`https://${link.url}`} 
+              href={link.url} 
               target="_blank">
               <strong class={cn(`font-bold text-lg`, link.colors?.title)}>{link.title}</strong>
               <p class={cn("text-muted-foreground", link.colors?.description)}>{link.description}</p>
@@ -105,7 +105,7 @@ const links = {
           {links.social.map(link => (
             <a 
             class="border rounded-md p-3"
-            href={`https://${link.url}`} target="_blank">
+            href={link.url} target="_blank">
                 <link.icon strokeWidth={1} />
                 <p class="sr-only">{link.title}</p>
             </a>
