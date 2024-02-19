@@ -21,6 +21,10 @@ export default function NavigationMenuDemo() {
             <NavigationMenuLink href="/blog" active={isActive("/blog")} className={navigationMenuTriggerStyle()}>
               Blog
             </NavigationMenuLink>
+        </NavigationMenuItem><NavigationMenuItem>
+            <NavigationMenuLink href="/setup" active={isActive("/setup")} className={navigationMenuTriggerStyle()}>
+              Setup
+            </NavigationMenuLink>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>

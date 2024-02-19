@@ -1,0 +1,38 @@
+---
+import config from '@/consts'
+import Header from '@/components/Header.astro';
+import Layout from "@/layouts/Layout.astro";
+import items from  '@/data/setup';
+---
+
+<Layout title={config.head.title} description={config.head.description} image={config.head.image}>
+  
+  <div class="page max-w-lg mx-auto px-2 md:px-0 antialiased ">
+      <Header />
+    
+      
+      <main class="grid grid-cols-2 gap-2 text-center pb-10">
+        {
+          items.map(async (item) => (
+            <a 
+              class={`border rounded border-gray-300 p-4 hover:bg-gray-100 dark:hover:bg-gray-800 dark:border-gray-800`}
+              href={item.url} 
+              target="_blank"
+              rel="noopener noreferrer">
+              <div class="bg-white rounded-sm p-4">
+                <img
+                class={`mb-1 h-auto w-full rounded-md rounded-b-none object-contain aspect-video`}
+                src={item.imgSrc}
+                alt={item.name}
+                />
+              </div>
+              <strong class={`font-bold text-lg`}>
+                {item.name}
+              </strong>
+            </a>
+          ))
+        }
+      </main>
+
+    </div>
+</Layout>
