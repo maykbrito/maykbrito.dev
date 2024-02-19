@@ -23,11 +23,11 @@
     const res = await fetch("/api/fetch-youtube").then(res => res.json())
 
     const video = res.items[0]
-    let { title, url } = video
-    url = `https://www.youtube.com/embed/${url.split("=")[1]}`
+    const { title, url } = video
+    const embed = `https://www.youtube.com/embed/${url.split("=")[1]}`
 
     document.getElementById("title").innerText = title
-    document.getElementById("video").src = url
+    document.getElementById("video").src = embed
     document.getElementById("externalLink").href = url
   })()
 </script>
