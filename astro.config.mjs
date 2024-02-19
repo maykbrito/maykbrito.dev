@@ -13,6 +13,6 @@ export default defineConfig({
   integrations: [react(), tailwind({
     applyBaseStyles: false
   }), sitemap(), mdx(), svelte()],
-  output: "server",
+  output: "hybrid",
   adapter: netlify()
 });
