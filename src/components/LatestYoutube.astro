@@ -1,87 +1,36 @@
 ---
-import { Image } from "astro:assets";
-import { XMLParser } from "fast-xml-parser";
 
-type Author = {
-  name: string;
-  uri: string;
-};
-
-type YouTubeRSSFeed = {
-  link: string[];
-  id: string; // yt:channel:{id}
-  "yt:channelId": string;
-  title: string;
-  author: Author;
-  entry: YouTubeRSSEntry[];
-};
-
-type YouTubeRSSEntry = {
-  id: string; // yt:video:{id}
-  "yt:videoId": string;
-  "yt:channelId": string;
-  title: string;
-  link: string;
-  published: string;
-  updated: string;
-  author: Author;
-  "media:group": YouTubeRSSMediaGroup;
-};
-
-type YouTubeRSSMediaGroup = {
-  "media:title": string;
-  "media:description": string;
-  "media:content": {
-    "@_url": string;
-    "@_type": string;
-    "@_width": string;
-    "@_height": string;
-  };
-  "media:thumbnail": {
-    "@_url": string;
-    "@_width": string;
-    "@_height": string;
-  };
-};
-
-type YouTubeRSS = {
-  feed: YouTubeRSSFeed;
-};
-
-type Props = {
-  channelID: string;
-};
-
-const { channelID } = Astro.props;
-const youtubeRSS = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelID}`;
-const rssData = await fetch(youtubeRSS).then((res) => res.text());
-
-const options = {
-  ignoreAttributes: false,
-  attributeNamePrefix: "@_",
-};
-const parser = new XMLParser(options);
-
-const rss = parser.parse(rssData) as YouTubeRSS;
-const video = rss.feed.entry[0];
 ---
 
+<script is:inline>
+  const fetchData = async () => {
+    const res = await fetch("/api/fetch-youtube").then(res => res.json())
+
+    const video = res.items[0]
+    let { title, url } = video
+    url = `https://www.youtube.com/embed/${url.split("=")[1]}`
+
+    document.getElementById("title").innerText = title
+    document.getElementById("video").src = url
+
+  }
+
+  fetchData()
+</script>
+
 <div class="flex flex-col w-full h-full">
-  <a href={video["media:group"]["media:content"]["@_url"]} target="_blank" class="flex-1 relative">
-      <Image
+  <a href="" target="_blank" rel="noopener noreferrer" class="flex-1 relative">
+      <iframe
+        id="video"
         class="rounded-lg object-cover object-center w-full h-full sm:h-48 md:h-52 xl:h-64 shadow-xl"
-        src={video["media:group"]["media:thumbnail"]["@_url"]}
-        alt={video["media:group"]["media:title"]}
-        width={parseInt(video["media:group"]["media:content"]["@_width"])}
-        height={parseInt(video["media:group"]["media:content"]["@_height"])}
-      />
-  </a>
-    <div class="flex flex-1 flex-col justify-between py-2">
-      <h2 class="text-2xl font-bold text-smoke-50 mb-2 break-words">
-        {video["media:group"]["media:title"]}
-      </h2>
+        src=""
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      /></iframe>
+      <div class="flex flex-1 flex-col justify-between py-2">
+        <h2 id="title" class="text-2xl font-bold text-smoke-50 mb-2 break-words"></h2>
       <div class="my-1 text-sm">
-        <a class="rounded-full inline-flex flex-row items-center px-2 ring-1 ring-smoke-800 text-smoke-300" target="_blank" href={video["media:group"]["media:content"]["@_url"]}>watch</a>
+          <span class="rounded-full inline-flex flex-row items-center px-2 ring-1 ring-smoke-800 text-smoke-300">watch</span>
+        </div>
       </div>
-    </div>
+  </a>
 </div>
