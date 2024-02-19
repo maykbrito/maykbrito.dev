@@ -26,8 +26,6 @@
     let { title, url } = video
     url = `https://www.youtube.com/embed/${url.split("=")[1]}`
 
-    console.log(video)
-
     document.getElementById("title").innerText = title
     document.getElementById("video").src = url
     document.getElementById("externalLink").href = url
