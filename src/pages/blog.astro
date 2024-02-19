@@ -7,6 +7,7 @@ import Header from '@/components/Header.astro';
 import Layout from "@/layouts/Layout.astro";
 import SearchBar from '@/components/SearchBar.astro';
 import Posts from '@/components/Posts.tsx';
+import LatestYoutube from '@/components/LatestYoutube.astro';
 
 const posts = await Astro.glob("./blog/*.mdx");
 const sortedPosts = await Promise.all(posts
@@ -42,9 +43,17 @@ const sortedPosts = await Promise.all(posts
 ---
 <Layout title={`${config.head.title} | Blog`} description="Escrevo sempre que possível para lembrar, explicar e aperfeiçoar o aprendizado de conceitos da programação WEB" image={config.head.image}>
     <Header />
+
+    
     <div class="page max-w-lg mx-auto px-10 md:px-0">  
-      
+
       <SearchBar/>
+
+      <div class="mt-8">
+
+        <LatestYoutube channelID='UCkr-unKyg_SiEzUwUY_uluQ' />
+      </div>
+      
 
       <main class="grid gap-2 my-10">
         <Posts posts={sortedPosts} client:load/>
