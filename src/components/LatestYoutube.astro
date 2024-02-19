@@ -22,7 +22,7 @@
   ;(async () => {
     const res = await fetch("/api/fetch-youtube").then(res => res.json())
 
-    const video = res.items[1]
+    const video = res.items[0]
     let { title, url } = video
     url = `https://www.youtube.com/embed/${url.split("=")[1]}`
 
