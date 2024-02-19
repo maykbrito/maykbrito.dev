@@ -1,23 +1,6 @@
 ---
 
 ---
-
-<script>
-  const fetchData = async () => {
-    const res = await fetch("/api/fetch-youtube").then(res => res.json())
-
-    const video = res.items[0]
-    let { title, url } = video
-    url = `https://www.youtube.com/embed/${url.split("=")[1]}`
-
-    document.getElementById("title").innerText = title
-    document.getElementById("video").src = url
-
-  }
-
-  fetchData()
-</script>
-
 <div class="flex flex-col w-full h-full">
   <a href="" target="_blank" rel="noopener noreferrer" class="flex-1 relative">
       <iframe
@@ -34,3 +17,27 @@
       </div>
   </a>
 </div>
+
+<script is:inline>
+  ;(async () => {
+    const res = await fetch("/api/fetch-youtube").then(res => res.json())
+
+    const video = res.items[1]
+    let { title, url } = video
+    url = `https://www.youtube.com/embed/${url.split("=")[1]}`
+
+    console.log(video)
+
+    const titleDisplay = document.getElementById("title")
+    const iframeSrc = document.getElementById("video")
+
+    if(titleDisplay) {
+      titleDisplay.innerText = title
+    }
+
+    if(iframeSrc) {
+      iframeSrc.src = url
+    }
+
+  })()
+</script>
