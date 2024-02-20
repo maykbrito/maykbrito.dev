@@ -7,7 +7,7 @@ import Header from '@/components/Header.astro';
 import Layout from "@/layouts/Layout.astro";
 import SearchBar from '@/components/SearchBar.astro';
 import Posts from '@/components/Posts.tsx';
-import LatestYoutube from '@/components/LatestYoutube.astro';
+import LatestYoutube from '@/components/LatestYoutube.svelte';
 
 const posts = await Astro.glob("./blog/*.mdx");
 const sortedPosts = await Promise.all(posts
@@ -51,7 +51,7 @@ const sortedPosts = await Promise.all(posts
 
       <div class="mt-8">
 
-        <LatestYoutube/>
+        <LatestYoutube client:load />
       </div>
       
 
