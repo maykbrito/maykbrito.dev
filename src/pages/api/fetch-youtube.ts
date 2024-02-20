@@ -54,22 +54,32 @@ type Props = {
 
 import type { APIRoute } from "astro";
 
+
+const cache = new Map<string, YouTubeRSS>();
+
 // export GET astro api
 export const GET: APIRoute = async ({ request }) => {
-
+  let video: YouTubeRSSEntry;
   const channelID = "UCkr-unKyg_SiEzUwUY_uluQ"
-  
-  const youtubeRSS = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelID}`;
-  const rssData = await fetch(youtubeRSS).then((res) => res.text());
-  
-  const options = {
-    ignoreAttributes: false,
-    attributeNamePrefix: "@_",
-  };
-  const parser = new XMLParser(options);
-  
-  const rss = parser.parse(rssData) as YouTubeRSS;
-  const video = rss.feed.entry[0];
+
+  if (cache.has(channelID)) {
+    const rss = cache.get(channelID) as YouTubeRSS;
+    video = rss.feed.entry[0];
+  } else {
+    const youtubeRSS = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelID}`;
+    const rssData = await fetch(youtubeRSS).then((res) => res.text());
+    
+    const options = {
+      ignoreAttributes: false,
+      attributeNamePrefix: "@_",
+    };
+    const parser = new XMLParser(options);
+    
+    const rss = parser.parse(rssData) as YouTubeRSS;
+    video = rss.feed.entry[0];
+
+    cache.set(channelID, rss);
+  }
 
   const res = {
     title: video["media:group"]["media:title"],
