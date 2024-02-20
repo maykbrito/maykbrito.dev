@@ -18,11 +18,11 @@ export default function NavigationMenuDemo() {
             </NavigationMenuLink>
         </NavigationMenuItem>
         <NavigationMenuItem>
-            <NavigationMenuLink href="/blog" active={isActive("/blog")} className={navigationMenuTriggerStyle()}>
+            <NavigationMenuLink href="/blog/" active={isActive("/blog/")} className={navigationMenuTriggerStyle()}>
               Blog
             </NavigationMenuLink>
         </NavigationMenuItem><NavigationMenuItem>
-            <NavigationMenuLink href="/setup" active={isActive("/setup")} className={navigationMenuTriggerStyle()}>
+            <NavigationMenuLink href="/setup/" active={isActive("/setup/")} className={navigationMenuTriggerStyle()}>
               Setup
             </NavigationMenuLink>
         </NavigationMenuItem>
