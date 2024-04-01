@@ -70,4 +70,10 @@ export default [
       "https://m.media-amazon.com/images/I/61aUBxqc5PL.__AC_SY445_SX342_QL70_ML2_.jpg",
     url: "https://www.amazon.com.br/Apple-MacBook-16-polegadas-Processador-GPU-16%25E2%2580%2591core/dp/B09L5969NZ/?&_encoding=UTF8&tag=maykbrito0a-20&linkCode=ur2&linkId=d9952142aedaf356c80fcffd00c8dada&camp=1789&creative=9325",
   },
+  {
+    name: "Óculos anti luz azul lente amarela",
+    imgSrc:
+      "https://http2.mlstatic.com/D_NQ_NP_667340-MLB75231032481_032024-O.webp",
+    url: "https://produto.mercadolivre.com.br/MLB-1919131534-oculos-anti-raios-azuis-gamerleituranoturnotv-_JM?attributes=COLOR_SECONDARY_COLOR%3ASDEgLSBQcmV0byBjb20gTGVudGVzIEFtYXJlbGFz&quantity=1",
+  },
 ];
