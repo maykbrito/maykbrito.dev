@@ -82,7 +82,7 @@ export default {
       url: string
       title: string
       description: string
-      color?: {
+      colors?: {
         title?: string
         description?: string
       }
