@@ -71,4 +71,26 @@ export default {
       
     ]
   }
+} as { 
+  head: { 
+    title: string; 
+    description: string;
+    image: string;
+  }, 
+  links: {
+    primary: {
+      url: string
+      title: string
+      description: string
+      color?: {
+        title?: string
+        description?: string
+      }
+    }[],
+    social: {
+      url: string
+      title: string
+      icon: any
+    }[]
+  },
 }
