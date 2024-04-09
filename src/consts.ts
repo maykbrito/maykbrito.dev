@@ -1,5 +1,7 @@
 // Place any global data in this file.
 // You can import this data from anywhere in your site by using the `import` keyword.
+import {GithubIcon, DiscordIcon, InstagramIcon, TwitchIcon, YoutubeIcon} from '@/components/Icons';
+
 
 export default {
   head: {
