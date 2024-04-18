@@ -85,6 +85,7 @@ export default {
       colors?: {
         title?: string
         description?: string
+        background?: string
       }
     }[],
     social: {
