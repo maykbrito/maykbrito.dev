@@ -11,16 +11,16 @@ export default {
   },
   links: {
     primary: [
-      // {
-      //   url: "https://www.rocketseat.com.br/eventos/nlw?utm_source=maykbrito&utm_medium=organic&utm_campaign=lead&utm_term=nlw&utm_content=lead-nlw-other-organic-evento-mayk-none-none-none-site",
-      //   title: "NLW Unite @Rocketseat",
-      //   description: "HTML, CSS e JS na prática",
-      //   colors: {
-      //     'background': 'bg-gradient-to-br from-[#22D3EE] to-amber-200',
-      //     'title': 'text-black',
-      //     'description': 'text-gray-800'
-      //   }
-      // },
+      {
+        url: "https://www.brazilmentioned.com/?utm_source=youtube&utm_medium=referral&utm_campaign=theprimeagen-youtube-referral&utm_term=event-future-of-applications-primeagen-youtube-referral&utm_content=brazilmentioned-lp",
+        title: "@ThePrimeagen in Brazil",
+        description: "Future of applications | @ArenaMagalu @Azion @Turso",
+        colors: {
+          'background': 'bg-gradient-to-br from-[#22D3EE] to-amber-200',
+          'title': 'text-black',
+          'description': 'text-gray-800'
+        }
+      },
       { 
         url: 'https://discover.maykbrito.dev',
         title: 'Discover (gratuito)',
