@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Button } from "./ui/button";
-import { Badge } from "./ui/badge";
 import type { Post } from "@/lib/types";
 import Tags from "./Tags";
 

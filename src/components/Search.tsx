@@ -9,7 +9,7 @@ const options = {
 	minMatchCharLength: 2,
 };
 
-export default function Search({ searchList }) {
+export default function Search({ searchList }: any) {
   const [query, setQuery] = useState('')
 
   const fuse = new Fuse(searchList, options)
@@ -19,8 +19,8 @@ export default function Search({ searchList }) {
     .map(result => result.item)
     .slice(0, 5)
 
-  function handleOnSearch({ target = {}}) {
-    const { value } = target
+  function handleOnSearch(event: React.ChangeEvent<HTMLInputElement>) {
+    const { value } = event.target
     setQuery(() => value)
   }
 
@@ -40,7 +40,7 @@ export default function Search({ searchList }) {
       )}
 
       <ul className='list-none'>
-        {posts && posts.map(post => (
+        {posts && posts.map((post:any) => (
           <li className='py-2' key={post.frontmatter.slug}>
             <a href={`/blog/${post.frontmatter.slug}`}>{post.frontmatter.title}</a>
             <p className="text-sm text-muted-foreground">{post.frontmatter.description}</p>
