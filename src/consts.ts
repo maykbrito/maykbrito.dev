@@ -12,9 +12,9 @@ export default {
   links: {
     primary: [
       {
-        url: "https://www.brazilmentioned.com/?utm_source=youtube&utm_medium=referral&utm_campaign=theprimeagen-youtube-referral&utm_term=event-future-of-applications-primeagen-youtube-referral&utm_content=brazilmentioned-lp",
-        title: "@ThePrimeagen in Brazil",
-        description: "Future of applications | @ArenaMagalu @Azion @Turso",
+        url: "https://rseat.in/one-future-mayk",
+        title: "One Future",
+        description: "Aniversário da Rocketseat com uma oferta imperdível!",
         colors: {
           'background': 'bg-gradient-to-br from-[#22D3EE] to-amber-200',
           'title': 'text-black',
@@ -30,11 +30,6 @@ export default {
         url: 'https://one.maykbrito.dev',
         title: 'Rocketseat',
         description: 'Formação completa em programação WEB'
-      },
-      {
-        url: 'https://masterclassjs.maykbrito.dev',
-        title: 'Masterclass de JavaScript',
-        description: 'Domine os fundamentos de JavaScript'
       },
       {
         url: 'https://biblioteca.maykbrito.dev',
