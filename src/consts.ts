@@ -32,6 +32,11 @@ export default {
         description: 'Formação completa em programação WEB'
       },
       {
+        url: 'masterclassjs.maykbrito.dev',
+        title: '✨ Quiz JavaScript',
+        description: 'Teste seus conhecimentos em JavaScript'
+      },
+      {
         url: 'https://biblioteca.maykbrito.dev',
         title: '+20 Cursos (gratuitos)',
         description: 'Cursos de HTML, CSS, JS, Node, SQL, etc...'
