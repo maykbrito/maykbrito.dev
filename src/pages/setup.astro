@@ -15,7 +15,7 @@ import items from  '@/data/setup.ts';
         {
           items.map(async (item) => (
             <a 
-              class={`border rounded border-gray-300 p-4 hover:bg-gray-100 dark:hover:bg-gray-800 dark:border-gray-800`}
+              class={`border rounded border-gray-300 p-4 hover:bg-gray-100 dark:hover:bg-gray-800 dark:border-gray-800 text-muted-foreground hover:text-white`}
               href={item.url} 
               target="_blank"
               rel="noopener noreferrer">
@@ -26,7 +26,7 @@ import items from  '@/data/setup.ts';
                 alt={item.name}
                 />
               </div>
-              <strong class={`font-bold text-lg`}>
+              <strong class={`font-bold text-sm mt-2 block`}>
                 {item.name}
               </strong>
             </a>

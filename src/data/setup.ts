@@ -76,4 +76,10 @@ export default [
       "https://http2.mlstatic.com/D_NQ_NP_667340-MLB75231032481_032024-O.webp",
     url: "https://produto.mercadolivre.com.br/MLB-1919131534-oculos-anti-raios-azuis-gamerleituranoturnotv-_JM?attributes=COLOR_SECONDARY_COLOR%3ASDEgLSBQcmV0byBjb20gTGVudGVzIEFtYXJlbGFz&quantity=1",
   },
+  {
+    name: "Óculos lente azul",
+    imgSrc:
+      "https://acdn.mitiendanube.com/stores/001/320/441/products/azul-1-eae8f262685ea62bc217043503492200-480-0.webp",
+    url: "https://lupada.com.br/produtos/oculos-jaguar-2-0/",
+  },
 ];
