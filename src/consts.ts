@@ -33,7 +33,7 @@ export default {
       },
       {
         url: 'masterclassjs.maykbrito.dev',
-        title: '✨ Quiz JavaScript',
+        title: '✨ Quiz JavaScript ✨',
         description: 'Teste seus conhecimentos em JavaScript'
       },
       {
