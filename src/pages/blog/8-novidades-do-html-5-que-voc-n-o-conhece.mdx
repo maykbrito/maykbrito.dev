@@ -1,0 +1,202 @@
+---
+layout: "../../layouts/PostLayout.astro"
+id: "71de7e73-a937-4bc1-84dd-135850a5df8d"
+slug: "8-novidades-do-html-5-que-voc-n-o-conhece"
+title: "8 novidades do HTML 5 que você NÃO  CONHECE"
+cover: "/Users/maykbrito/Works/Astro/maykbrito.dev/src/images/posts/f609571bf439523f169c5f8a66fb0bb3cda1038d454037a926cfb1f4deece258-cover.png"
+tags: [{"id":"72223833-a0ec-45b4-86ef-bd73fdac5c3c","name":"HTML","color":"purple"}]
+created_time: 2024-05-27T09:30:00.000Z
+last_edited_time: 2024-05-27T12:33:00.000Z
+icon: null
+archived: false
+status: "published"
+publish_date: 2024-05-27
+description: "Vamos conhecer novidades do HTML 5 em 2024 baseado na pesquisa State of HTML"
+reading_time: "2 min read"
+---
+import Image from '../../components/Image.astro';
+
+
+Você já ouviu falar do [State of HTML](https://stateofhtml.com/en-US) ?
+
+
+É uma pesquisa anual que mostra o uso e conhecimento de características do HTML pela comunidade.
+
+
+É possível participar e ver os resultados da pesquisa. Nesse momento, você poderá encontrar `features` HTML que você nem sabia que existiam.
+
+
+Aqui vão 5 delas.
+
+
+## 1. Popover
+
+
+```html
+<div id="my-pop" popover> 
+  like 👍🏾 
+</div>
+
+<button popovertarget="my-pop" popovertargetaction="show">
+  Show
+</button>
+
+<button popovertarget="my-pop" popovertargetaction="hide">
+  Hide
+</button>
+```
+
+
+[https://developer.mozilla.org/en-US/docs/Web/API/Popover_API](https://developer.mozilla.org/en-US/docs/Web/API/Popover_API)
+
+
+[https://caniuse.com/mdn-html_global_attributes_popover](https://caniuse.com/mdn-html_global_attributes_popover)
+
+
+## 2. Dialog
+
+
+```html
+<button id="openModal">Open</button>
+<dialog id="dialog">
+  <h1>Let's code!</h1>
+	<form method="dialog">
+		<button>Ok!</button>
+	</form>
+
+</dialog>
+
+<script>
+	openModal.onclick = () => {
+    dialog.showModal();
+  }
+</script>
+
+<style>
+  ::backdrop {
+    background: rgb(0 0 0 / 0.7)
+  }
+</style>
+```
+
+
+[https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog)
+
+
+[https://caniuse.com/dialog](https://caniuse.com/dialog)
+
+
+
+## 3. Datalist
+
+
+```html
+<label for="list">O melhor 🏆</label>
+<input id="list" list="my-list" type="text">
+<datalist id="my-list">
+  <option value="Astro 🚀"></option>
+  <option value="React 🤮"></option>
+  <option value="Vue ✨"></option>
+</datalist>
+```
+
+
+[https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/datalist)
+
+
+[https://caniuse.com/datalist](https://caniuse.com/datalist)
+
+
+## 4. Details
+
+
+```html
+<details open name="panel">
+	<summary>Main info</summary>
+  Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit quas reiciendis amet est debitis nobis natus, error nostrum perferendis modi, placeat officiis. Culpa deleniti cupiditate nobis, quaerat a distinctio ad.
+</details>
+<details name="panel">
+	<summary>Style</summary>
+  Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit ullam sint adipisci consectetur vel dolorum libero optio voluptatibus omnis quidem! Maxime rem tempora atque explicabo saepe minima omnis sequi fugit!
+</details>
+```
+
+
+[https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details)
+
+
+[https://caniuse.com/details](https://caniuse.com/details)
+
+
+## 5. Custom elements
+
+
+```html
+<!-- crie qualquer elemento dando nome 
+com no mínimo 2 palavras. O elemento será entendido 
+como display:inline -->
+<mb-pop>Love it! 💜</mb-pop>
+
+<!-- se quiser fazer via JS -->
+<script>
+	class MyCustomElement extends HTMLElement {
+	  constructor(){
+		  super();
+	  }
+	}
+	
+	customElements.define("mb-pop", MyCustomElement)
+
+</script>
+```
+
+
+[https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/define](https://developer.mozilla.org/en-US/docs/Web/API/CustomElementRegistry/define)
+
+
+## 6. Media capture
+
+
+```html
+<!-- irá abrir a câmera -->
+<input type="file" capture>
+```
+
+
+[https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/capture](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/capture)
+
+
+[https://caniuse.com/html-media-capture](https://caniuse.com/html-media-capture)
+
+
+## 7. Content Editable
+
+
+```html
+<h2 class="title" contenteditable="plaintext-only">
+  Plain text
+</h2>
+```
+
+
+[https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/contenteditable](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/contenteditable)
+
+
+## 8. Fetch Priority
+
+
+```html
+<img src="https://github.com/maykbrito.png"
+  width="200" 
+  height="200"
+  loading="lazy"
+  fetchpriority="high" />
+```
+
+
+[https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/fetchPriority](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/fetchPriority)
+
+
+[https://caniuse.com/mdn-html_elements_script_fetchpriority](https://caniuse.com/mdn-html_elements_script_fetchpriority)
+
+
