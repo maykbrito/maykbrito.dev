@@ -12,9 +12,9 @@ export default {
   links: {
     primary: [
       {
-        url: " https://www.rocketseat.com.br/oferta/5anos?utm_source=social&utm_medium=organic&utm_campaign=venda&utm_term=one_future&utm_content=evento-one_future_lp_oferta-other-organic-mayk-other-none-10-maio-social",
-        title: "One Future",
-        description: "Aniversário da Rocketseat com uma oferta IMPOSSÍVEL!",
+        url: "https://rseat.in/jornadagratuita",
+        title: "Jornada do Zero a Programação",
+        description: "Evento online gratuito para quem quer aprender a programar",
         colors: {
           background: 'bg-gradient-to-br from-[#e254ff] to-[#5f75f2] hover:from-[#9956f6] hover:to-[#29e0a9] ',
           title: 'text-black',
