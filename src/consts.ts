@@ -32,7 +32,7 @@ export default {
         description: 'Formação completa em programação WEB'
       },
       {
-        url: 'masterclassjs.maykbrito.dev',
+        url: 'https://masterclassjs.maykbrito.dev',
         title: '✨ Quiz JavaScript ✨',
         description: 'Teste seus conhecimentos em JavaScript'
       },
