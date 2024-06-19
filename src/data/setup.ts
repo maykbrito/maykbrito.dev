@@ -41,10 +41,10 @@ export default [
     url: "https://www.amazon.com.br/Behringer-XM1800S-Microfone/dp/B000NJ2TIE/?&_encoding=UTF8&tag=maykbrito0a-20&linkCode=ur2&linkId=8e2c5dc33eb897f15f2d219731c1555d&camp=1789&creative=9325",
   },
   {
-    name: "Monitor LG 21.5 LED Full HD",
+    name: "Monitor 23.8 1080p Eye-Care GW2485TC",
     imgSrc:
-      "https://m.media-amazon.com/images/I/41Ib3U3BlUL.__AC_SX300_SY300_QL70_ML2_.jpg",
-    url: "https://www.amazon.com.br/Monitor-LG-LED-Full-21-5/dp/B07ML9239T/?&_encoding=UTF8&tag=maykbrito0a-20&linkCode=ur2&linkId=ce0993ec7578d616c94a4db5cbd6b5d5&camp=1789&creative=9325",
+      "https://image.benq.com/is/image/benqco/09-gw2785tc-2?$ResponsivePreset$&fmt=png-alpha",
+    url: "https://www.benq.com/en-us/monitor/home/gw2485tc.html",
   },
   {
     name: "Suporte Microfone",
