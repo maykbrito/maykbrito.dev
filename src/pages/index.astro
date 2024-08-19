@@ -1,55 +1,69 @@
 ---
-import config from '@/consts.ts'
-import Header from '@/components/Header.astro';
+import config from "@/consts.ts";
+import Header from "@/components/Header.astro";
 import Layout from "@/layouts/Layout.astro";
-import Me from '@/components/Me';
-import { cn } from '@/lib/utils';
+import Me from "@/components/Me";
+import { cn } from "@/lib/utils";
 
-const { links } = config
+const { links } = config;
 ---
 
-<Layout title={config.head.title} description={config.head.description} image={config.head.image}>
-  
-  <div class="page max-w-xs mx-auto px-2 md:px-0 antialiased ">
-      <Header />
+<Layout
+  title={config.head.title}
+  description={config.head.description}
+  image={config.head.image}
+>
+  <div class="page max-w-xs mx-auto px-2 md:px-0 antialiased">
+    <Header />
 
-      <div class="grid gap-12">
-    
+    <div class="grid gap-12">
       <div class="text-center">
         <Me className="mx-auto w-32 h-32" />
         <div class="mb-2 mt-4 text-lg font-medium">@maykbrito</div>
         <p class="leading-tight text-muted-foreground">
-          😍 Apaixonado por ensino.<br/>
-          ⭐️ Descomplicando a Programação WEB.<br/>
-          💡 Gosto de falar sobre hard e soft skills.<br/>
+          🚀 CCO <a
+            href="https://instagram.com/rocketseat"
+            rel="noreferrer noopener"
+            target="_blank">@rocketseat</a
+          >.<br />
+          😍 Apaixonado por ensino.<br />
+          ⭐️ Descomplicando a Programação WEB.<br />
+          💡 Gosto de falar sobre hard e soft skills.<br />
         </p>
       </div>
-      
+
       <main class="grid gap-2 text-center">
         {
           links.primary.map(async (link) => (
-            <a 
-              class={cn(`border rounded border-gray-300 p-4 hover:bg-gray-100 dark:hover:bg-gray-800 dark:border-gray-800`, link.colors?.background)}
-              href={link.url} 
-              target="_blank">
-              <strong class={cn(`font-bold text-lg`, link.colors?.title)}>{link.title}</strong>
-              <p class={cn("text-muted-foreground", link.colors?.description)}>{link.description}</p>
+            <a
+              class={cn(
+                `border rounded border-gray-300 p-4 hover:bg-gray-100 dark:hover:bg-gray-800 dark:border-gray-800`,
+                link.colors?.background
+              )}
+              href={link.url}
+              target="_blank"
+            >
+              <strong class={cn(`font-bold text-lg`, link.colors?.title)}>
+                {link.title}
+              </strong>
+              <p class={cn("text-muted-foreground", link.colors?.description)}>
+                {link.description}
+              </p>
             </a>
           ))
         }
       </main>
 
-        <footer class="flex flex-wrap gap-2 justify-center mb-20 ">
-          {links.social.map(link => (
-            <a 
-            class="border rounded-md p-3"
-            href={link.url} target="_blank">
-                <link.icon strokeWidth={1} />
-                <p class="sr-only">{link.title}</p>
+      <footer class="flex flex-wrap gap-2 justify-center mb-20">
+        {
+          links.social.map((link) => (
+            <a class="border rounded-md p-3" href={link.url} target="_blank">
+              <link.icon strokeWidth={1} />
+              <p class="sr-only">{link.title}</p>
             </a>
-          ))}
-        </footer>
-      </div>
-
+          ))
+        }
+      </footer>
     </div>
+  </div>
 </Layout>
