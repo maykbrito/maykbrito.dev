@@ -88,4 +88,10 @@ export default [
     imgSrc: "https://m.media-amazon.com/images/I/61vXwLemjJL._AC_SX522_.jpg",
     url: "https://www.amazon.com.br/Hollyland-Transmiss%C3%A3o-Cancelamento-Compat%C3%ADvel-Vivo-Preto/dp/B0CP7QXWPN/",
   },
+  {
+    name: "Mesa de escritório Silk",
+    imgSrc:
+      "https://acdn.mitiendanube.com/stores/716/003/products/imgs_estrutura_high_preta-001-b2162274cbbc0ba4d016839109691147-640-0.webp",
+    url: "https://loja.slik.com.br/produtos/slikdesk-high-mesa-com-regulagem-de-altura-eletrica/",
+  },
 ];
