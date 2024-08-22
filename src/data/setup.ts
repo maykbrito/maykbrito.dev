@@ -37,7 +37,8 @@ export default [
   },
   {
     name: "Microfone Behringer XM1800S",
-    imgSrc: "https://m.media-amazon.com/images/I/710zDNfn3FL.__AC_SY300_SX300_QL70_ML2_.jpg",
+    imgSrc:
+      "https://m.media-amazon.com/images/I/710zDNfn3FL.__AC_SY300_SX300_QL70_ML2_.jpg",
     url: "https://www.amazon.com.br/Behringer-XM1800S-Microfone/dp/B000NJ2TIE/?&_encoding=UTF8&tag=maykbrito0a-20&linkCode=ur2&linkId=8e2c5dc33eb897f15f2d219731c1555d&camp=1789&creative=9325",
   },
   {
@@ -81,5 +82,10 @@ export default [
     imgSrc:
       "https://acdn.mitiendanube.com/stores/001/320/441/products/azul-1-eae8f262685ea62bc217043503492200-480-0.webp",
     url: "https://lupada.com.br/produtos/oculos-jaguar-2-0/",
+  },
+  {
+    name: "Hollyland Lark M2",
+    imgSrc: "https://m.media-amazon.com/images/I/61vXwLemjJL._AC_SX522_.jpg",
+    url: "https://www.amazon.com.br/Hollyland-Transmiss%C3%A3o-Cancelamento-Compat%C3%ADvel-Vivo-Preto/dp/B0CP7QXWPN/",
   },
 ];
