@@ -16,16 +16,16 @@ export default {
   },
   links: {
     primary: [
-      // {
-      //   url: "https://rseat.in/jornadagratuita",
-      //   title: "Jornada do Zero a Programação",
-      //   description: "Evento online gratuito para quem quer aprender a programar",
-      //   colors: {
-      //     background: 'bg-gradient-to-br from-[#e254ff] to-[#5f75f2] hover:from-[#9956f6] hover:to-[#29e0a9] ',
-      //     title: 'text-black',
-      //     description: 'text-gray-800'
-      //   }
-      // },
+      {
+        url: "https://www.rocketseat.com.br/eventos/nlw?utm_source=mayk&utm_medium=organic&utm_campaign=lead&utm_term=evento-nlw&utm_content=pagevento-lp_evento_nlw_pocket_inscricao",
+        title: "✨ NLW 17 ✨",
+        description: "Evento gratuito para você construir um projeto em 3 dias.",
+        colors: {
+          background: 'bg-gradient-to-br from-[#e254ff] to-[#5f75f2] hover:from-[#9956f6] hover:to-[#29e0a9] ',
+          title: 'text-black',
+          description: 'text-gray-800'
+        }
+      },
       {
         url: "https://one.maykbrito.dev",
         title: "Rocketseat",
@@ -38,7 +38,7 @@ export default {
       },
       {
         url: "https://masterclassjs.maykbrito.dev",
-        title: "✨ Quiz JavaScript ✨",
+        title: "Quiz JavaScript",
         description: "Teste seus conhecimentos em JavaScript",
       },
       {
