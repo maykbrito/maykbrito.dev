@@ -1,38 +1,38 @@
 ---
-import { getImage } from "astro:assets";
-import { postImageImport } from "@/lib/images.mjs";
-import Tags from "@/components/Tags";
-import ParallaxImageHeader from "@/components/ParallaxImageHeader.svelte";
-import TableOfContents from "@/components/TableOfContents.astro";
-import Header from "@/components/Header.astro";
-import Layout from "./Layout.astro";
-import SocialShare from "@/components/SocialShare.astro";
+import { getImage } from 'astro:assets'
+import Header from '@/components/Header.astro'
+import ParallaxImageHeader from '@/components/ParallaxImageHeader.svelte'
+import SocialShare from '@/components/SocialShare.astro'
+import TableOfContents from '@/components/TableOfContents.astro'
+import Tags from '@/components/Tags'
+import { postImageImport } from '@/lib/images.mjs'
+import Layout from './Layout.astro'
 
-const { frontmatter } = Astro.props;
+const { frontmatter } = Astro.props
 
-const showProfileSubtitle = true; // TODO: Expose this as config option
-let optimizedDesktopCoverImage: any = null;
-let optimizedMobileCoverImage: any = null;
+const showProfileSubtitle = true // TODO: Expose this as config option
+let optimizedDesktopCoverImage: any = null
+let optimizedMobileCoverImage: any = null
 
 if (frontmatter?.cover) {
-  const { default: dynamicImg } = await postImageImport(frontmatter.cover);
+  const { default: dynamicImg } = await postImageImport(frontmatter.cover)
 
   optimizedDesktopCoverImage = frontmatter?.cover
     ? await getImage({ src: dynamicImg, width: 1920, height: 1080 })
-    : "";
+    : ''
 
   optimizedMobileCoverImage = frontmatter?.cover
     ? await getImage({ src: dynamicImg, width: 720, height: 480 })
-    : "";
+    : ''
 }
 
 const dateStr = new Date(
   frontmatter.publish_date! || frontmatter.created_time!
-).toLocaleString("pt-BR", {
-  month: "short",
-  day: "numeric",
-  year: "numeric",
-});
+).toLocaleString('pt-BR', {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric',
+})
 ---
 <Layout
   title={frontmatter.title}

@@ -9,6 +9,8 @@
     "preview": "astro preview",
     "check": "astro check",
     "astro": "astro",
+    "lint": "biome lint --write .",
+    "lint:fix": "biome check --write .",
     "sync": "rimraf src/pages/blog/* && node src/astronot.js",
     "sync:published": "rimraf src/pages/blog/* && node src/astronot.js --published",
     "generate": "rimraf dist/** && ([ -d 'dist' ] || mkdir dist) && ([ -d 'dist/images' ] || mkdir dist/images) && ([ -d 'src/pages/blog' ] || mkdir src/pages/blog) && ([ -d 'src/images' ] || mkdir src/images) && ([ -d 'src/images/blog' ] || mkdir src/images/blog) && rimraf src/pages/blog/* && node src/astronot.js --published && astro build"
@@ -33,6 +35,7 @@
     "astro": "^4.0.6",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
+    "dayjs": "^1.11.13",
     "dotenv": "^16.3.1",
     "fast-xml-parser": "^4.3.4",
     "fuse.js": "^7.0.0",
@@ -49,5 +52,8 @@
     "tailwindcss": "^3.3.7",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.2"
   }
 }

@@ -1,11 +1,11 @@
 ---
-import config from "@/consts.ts";
-import Header from "@/components/Header.astro";
-import Layout from "@/layouts/Layout.astro";
-import Me from "@/components/Me";
-import { cn } from "@/lib/utils";
+import Header from '@/components/Header.astro'
+import Me from '@/components/Me'
+import config from '@/consts.ts'
+import Layout from '@/layouts/Layout.astro'
+import { cn } from '@/lib/utils'
 
-const { links } = config;
+const { links } = config
 ---
 
 <Layout
@@ -13,7 +13,7 @@ const { links } = config;
   description={config.head.description}
   image={config.head.image}
 >
-  <div class="page max-w-xs mx-auto px-2 md:px-0 antialiased">
+  <div class="page max-w-sm mx-auto px-10 md:px-0 antialiased">
     <Header />
 
     <div class="grid gap-12">
@@ -46,15 +46,13 @@ const { links } = config;
               <strong class={cn(`font-bold text-lg`, link.colors?.title)}>
                 {link.title}
               </strong>
-              <p class={cn("text-muted-foreground", link.colors?.description)}>
-                {link.description}
-              </p>
+              <p class={cn("text-muted-foreground", link.colors?.description)} set:html={link.description} />
             </a>
           ))
         }
       </main>
 
-      <footer class="flex flex-wrap gap-2 justify-center mb-20">
+      <footer class="flex flex-wrap gap-2 justify-center mb-20 max-w-[180px] mx-auto sm:max-w-max">
         {
           links.social.map((link) => (
             <a class="border rounded-md p-3" href={link.url} target="_blank">

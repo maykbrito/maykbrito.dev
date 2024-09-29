@@ -1,15 +1,14 @@
 import Fuse from 'fuse.js'
 import { useState } from 'react'
+import { dayjs } from '@/lib/dayjs'
 
-// Configs fuse.js
-// https://fusejs.io/api/options.html
 const options = {
-  keys: ['frontmatter.title', 'fontmatter.description', 'frontmatter.slug'],
+  keys: ['title'],
   includeMatches: true,
   minMatchCharLength: 2,
 }
 
-export default function Search({ searchList }: any) {
+export function SearchShorts({ searchList, placeholder }: any) {
   const [query, setQuery] = useState('')
 
   const fuse = new Fuse(searchList, options)
@@ -17,7 +16,7 @@ export default function Search({ searchList }: any) {
   const posts = fuse
     .search(query)
     .map(result => result.item)
-    .slice(0, 5)
+    .slice(0, 10)
 
   function handleOnSearch(event: React.ChangeEvent<HTMLInputElement>) {
     const { value } = event.target
@@ -27,7 +26,7 @@ export default function Search({ searchList }: any) {
   return (
     <>
       <label htmlFor="search" className="sr-only">
-        Search
+        Pesquisar
       </label>
       <input
         className="block w-full p-4 pl-6 text-gray-900 border border-gray-300 dark:border-gray-800 rounded bg-gray-50 dark:bg-gray-950 dark:text-gray-100"
@@ -35,11 +34,11 @@ export default function Search({ searchList }: any) {
         id="search"
         value={query}
         onChange={handleOnSearch}
-        placeholder="Search posts"
+        placeholder={placeholder ? placeholder : "Pesquise por vídeos"}
       />
       {query.length > 1 && (
         <p className="my-4">
-          Found {posts.length} {posts.length === 1 ? 'result' : 'results'} para
+          Encontrado {posts.length} {posts.length === 1 ? 'resultado' : 'resultados'} para
           '{query}'
         </p>
       )}
@@ -47,13 +46,27 @@ export default function Search({ searchList }: any) {
       <ul className="list-none">
         {posts &&
           posts.map((post: any) => (
-            <li className="py-2" key={post.frontmatter.slug}>
-              <a href={`/blog/${post.frontmatter.slug}`}>
-                {post.frontmatter.title}
+            <li className="py-4 border-b" key={post.videoId}>
+              <a
+                className='flex gap-4'
+                target='_blank' 
+                rel="noreferrer noopenner"
+                href={`https://www.youtube.com/watch?v=${post.videoId}`}>
+
+              
+              <img 
+                className='w-12 h-20 rounded-md object-cover shrink-0'
+              src={post.thumbnails.medium.url} alt="cover" />
+
+              <div className='space-y-4 flex-1'>
+                <p>{post.title}</p>
+
+                <p className="text-xs text-gray-500 dark:text-gray-400 text-right">
+                  postado {dayjs(post.publishedAt).fromNow()}
+                </p>
+              </div>
+
               </a>
-              <p className="text-sm text-muted-foreground">
-                {post.frontmatter.description}
-              </p>
             </li>
           ))}
       </ul>

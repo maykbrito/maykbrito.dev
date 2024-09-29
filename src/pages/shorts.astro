@@ -1,0 +1,29 @@
+---
+import Header from '@/components/Header.astro'
+
+import config from '@/consts.ts'
+import Layout from '@/layouts/Layout.astro'
+import { SearchShorts } from '@/components/SearchShorts'
+import ShortsList from '@/components/ShortsList'
+
+const apiURL = new URL("/api", Astro.url)
+// get playlist shorts: https://stackoverflow.com/questions/19795987/youtube-channel-and-playlist-id-prefixes
+const playlistId = "UUSHkr-unKyg_SiEzUwUY_uluQ"
+const videos = await fetch(`${apiURL.href}/fetch-youtube-playlist/?id=${playlistId}`).then(res => res.json())
+---
+<Layout title={`${config.head.title} | Shorts`} description="Recortes de vídeos do canal Mayk Brito" image={config.head.image}>
+    <Header />
+
+    
+    <div class="max-w-lg mx-auto px-10 md:px-0"> 
+      <SearchShorts placeholder="Pesquise por shorts" searchList={videos} client:only="react" />
+      
+      <p class="text-right text-xs text-gray-500 mt-4">
+      total de {videos.length} shorts no <a href="https://www.youtube.com/channel/UCkr-unKyg_SiEzUwUY_uluQ" target="_blank" class="underline">canal Mayk Brito</a>
+      </p>
+
+        <main class="grid gap-4 my-10 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 ">
+          <ShortsList videos={videos} client:only="react"/>
+        </main>
+    </div>
+</Layout>

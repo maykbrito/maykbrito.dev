@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { Button } from "./ui/button";
-import type { Post } from "@/lib/types";
-import Tags from "./Tags";
+import type { Post } from '@/lib/types'
+import { useState } from 'react'
+import Tags from './Tags'
+import { Button } from './ui/button'
 
 export default function Posts({ ...props }) {
-  const posts = props.posts;
-  let showItems = 3;
-  const [currentItems, setCurrentItems] = useState(showItems);
+  const posts = props.posts
+  const showItems = 3
+  const [currentItems, setCurrentItems] = useState(showItems)
 
   return (
     <>
@@ -16,10 +16,10 @@ export default function Posts({ ...props }) {
             key={post.frontmatter.id}
             href={`/blog/${post.frontmatter.slug}`}
             className={
-              "post-link-container block mb-4 " +
+              'post-link-container block mb-4 ' +
               post.frontmatter.tags
                 .map((tag: { id: string }) => `post-link-tag-${tag.id}`)
-                .join(" ")
+                .join(' ')
             }
           >
             <article className="transform rounded-lg border border-gray-200 bg-white shadow-md transition duration-100 ease-in dark:border-gray-700 dark:bg-gray-950 sm:hover:scale-[102%] lg:hover:scale-105">
@@ -31,7 +31,7 @@ export default function Posts({ ...props }) {
                 {post.frontmatter.optimizedCoverImage && (
                   <img
                     className={`mb-1 h-auto w-full rounded-md rounded-b-none object-cover`}
-                    style={{ aspectRatio: "4/1" }}
+                    style={{ aspectRatio: '4/1' }}
                     src={post.frontmatter.coverImageSrc}
                     alt="cover"
                   />
@@ -74,5 +74,5 @@ export default function Posts({ ...props }) {
         </Button>
       )}
     </>
-  );
+  )
 }

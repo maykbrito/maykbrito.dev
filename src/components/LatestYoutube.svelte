@@ -1,15 +1,15 @@
 <script>
-  import { onMount } from "svelte";
-  
-  let title, url, thumbnail;
+import { onMount } from 'svelte'
 
-  onMount(async () => {
-    const res = await fetch("/api/fetch-youtube").then((res) =>res.json());
-    
-    title = res.title;
-    url = res.url;
-    thumbnail = res.thumbnail;
-  })
+let title, url, thumbnail
+
+onMount(async () => {
+  const res = await fetch('/api/fetch-youtube').then(res => res.json())
+
+  title = res.title
+  url = res.url
+  thumbnail = res.thumbnail
+})
 </script>
 
 

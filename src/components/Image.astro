@@ -1,18 +1,18 @@
 ---
-import { Image as AstroImage } from "astro:assets";
-import { postImageImport } from "@/lib/images.mjs";
+import { Image as AstroImage } from 'astro:assets'
+import { postImageImport } from '@/lib/images.mjs'
 
 const {
   src,
   MAX_WIDTH = 1400, // 2x max width of blog section width (2x for retina devices). Max width on Medium is 680px, so target that as max width for articles.
-  imageClass = "w-full bg-gray-100",
-  alt = "Blog Image",
-} = Astro.props;
+  imageClass = 'w-full bg-gray-100',
+  alt = 'Blog Image',
+} = Astro.props
 
-const relativeSrc = `../${src}`;
-const imgType = relativeSrc.split(".").pop();
-const { default: imgData } = await postImageImport(src);
-const { width, height } = imgData;
+const relativeSrc = `../${src}`
+const imgType = relativeSrc.split('.').pop()
+const { default: imgData } = await postImageImport(src)
+const { width, height } = imgData
 ---
 
 {

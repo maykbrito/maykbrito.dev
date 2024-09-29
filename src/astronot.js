@@ -1,77 +1,83 @@
-import { Client } from "@notionhq/client";
-import { NotionToMarkdown } from "notion-to-md";
-import fs from 'fs';
-import readingTime from 'reading-time';
-import { parseArgs } from 'node:util';
-import { sanitizeUrl, sanitizeImageString } from './lib/sanitize.mjs';
-import { downloadImage } from './lib/images.mjs';
-import { delay } from './lib/delay.mjs';
+import fs from 'node:fs'
+import { parseArgs } from 'node:util'
+import { Client } from '@notionhq/client'
 import { config } from 'dotenv'
+import { NotionToMarkdown } from 'notion-to-md'
+import readingTime from 'reading-time'
+import { delay } from './lib/delay.mjs'
+import { downloadImage } from './lib/images.mjs'
+import { sanitizeImageString, sanitizeUrl } from './lib/sanitize.mjs'
 
 // Input Arguments
 const ARGUMENT_OPTIONS = {
-  published: { // Only sync published posts
+  published: {
+    // Only sync published posts
     type: 'boolean',
-    short: 'p'
+    short: 'p',
   },
-};
-const { values: { published } } = parseArgs({ options: ARGUMENT_OPTIONS });
-const isPublished = !!published;
+}
+const {
+  values: { published },
+} = parseArgs({ options: ARGUMENT_OPTIONS })
+const isPublished = !!published
 console.log(`Syncing Published Only: ${isPublished}`)
 
 // Load ENV Variables
-config();
-if (!process.env.NOTION_KEY || !process.env.DATABASE_ID) throw new Error("Missing Notion .env data")
-const NOTION_KEY = process.env.NOTION_KEY;
-const DATABASE_ID = process.env.DATABASE_ID;
+config()
+if (!process.env.NOTION_KEY || !process.env.DATABASE_ID)
+  throw new Error('Missing Notion .env data')
+const NOTION_KEY = process.env.NOTION_KEY
+const DATABASE_ID = process.env.DATABASE_ID
 
-const POSTS_PATH = `src/pages/blog`;
-const THROTTLE_DURATION = 334; // ms Notion API has a rate limit of 3 requests per second, so ensure that is not exceeded
+const POSTS_PATH = `src/pages/blog`
+const THROTTLE_DURATION = 334 // ms Notion API has a rate limit of 3 requests per second, so ensure that is not exceeded
 
 const notion = new Client({
   auth: NOTION_KEY,
   config: {
     parseChildPages: false,
-  }
-});
+  },
+})
 
 // Notion Custom Block Transform START
-const n2m = new NotionToMarkdown({ notionClient: notion });
-n2m.setCustomTransformer("embed", async (block) => {
-  const { embed } = block;
-  if (!embed?.url) return "";
+const n2m = new NotionToMarkdown({ notionClient: notion })
+n2m.setCustomTransformer('embed', async block => {
+  const { embed } = block
+  if (!embed?.url) return ''
   return `<figure>
   <iframe src="${embed?.url}"></iframe>
   <figcaption>${await n2m.blockToMarkdown(embed?.caption)}</figcaption>
-</figure>`;
-});
+</figure>`
+})
 
-n2m.setCustomTransformer("image", async (block) => {
-  const { image } = block;
-  const imageUrl = image?.file?.url || image?.external?.url;
-  const imageFileName = sanitizeImageString(imageUrl.split('/').pop());
-  const filePath = await downloadImage(imageUrl, `./images/${imageFileName}`);
-  const fileName = filePath.split('/').pop();
+n2m.setCustomTransformer('image', async block => {
+  const { image } = block
+  const imageUrl = image?.file?.url || image?.external?.url
+  const imageFileName = sanitizeImageString(imageUrl.split('/').pop())
+  const filePath = await downloadImage(imageUrl, `./images/${imageFileName}`)
+  const fileName = filePath.split('/').pop()
 
-  return `<Image src="/images/posts/${fileName}" />`;
-});
+  return `<Image src="/images/posts/${fileName}" />`
+})
 
-n2m.setCustomTransformer("video", async (block) => {
-  const { video } = block;
-  const { external: { url: videoUrl } } = video;
+n2m.setCustomTransformer('video', async block => {
+  const { video } = block
+  const {
+    external: { url: videoUrl },
+  } = video
 
-  let url = videoUrl;
+  let url = videoUrl
 
   if (url.includes('youtube.com')) {
     if (url.includes('/watch')) {
       // Youtube URLs with the /watch format don't work, need to be replaced with /embed
-      const videoId = url.split('&')[0].split('?v=')[1];
-      url = `https://www.youtube.com/embed/${videoId}`;
+      const videoId = url.split('&')[0].split('?v=')[1]
+      url = `https://www.youtube.com/embed/${videoId}`
     }
   }
 
   return `<iframe width="100%" height="480" src="${url}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`
-});
+})
 // Notion Custom Block Transform END
 
 // Fetch Notion Posts from Database via Notion API
@@ -81,27 +87,28 @@ const queryParams = {
 
 if (isPublished) {
   queryParams.filter = {
-    "and": [
+    and: [
       {
-        "property": "status",
-        "select": {
-          equals: 'published'
-        }
+        property: 'status',
+        select: {
+          equals: 'published',
+        },
       },
-    ]
+    ],
   }
 }
 
-const databaseResponse = await notion.databases.query(queryParams);
-const { results } = databaseResponse;
+const databaseResponse = await notion.databases.query(queryParams)
+const { results } = databaseResponse
 
 // Create Pages
-const pages = results.map((page) => {
-  const { properties, cover, created_time, last_edited_time, icon, archived } = page;
+const pages = results.map(page => {
+  const { properties, cover, created_time, last_edited_time, icon, archived } =
+    page
   const title = properties.title.title[0].plain_text
   const slug = properties?.slug?.rich_text[0]?.plain_text || sanitizeUrl(title)
 
-  console.info("Notion Page:", page);
+  console.info('Notion Page:', page)
 
   return {
     id: page.id,
@@ -118,18 +125,23 @@ const pages = results.map((page) => {
     description: properties?.description?.rich_text[0]?.plain_text,
     slug,
   }
-});
+})
 
-for (let page of pages) {
-  console.info("Fetching from Notion & Converting to Markdown: ", `${page.title} [${page.id}]`);
-  const mdblocks = await n2m.pageToMarkdown(page.id);
-  const { parent: mdString } = n2m.toMarkdownString(mdblocks);
+for (const page of pages) {
+  console.info(
+    'Fetching from Notion & Converting to Markdown: ',
+    `${page.title} [${page.id}]`
+  )
+  const mdblocks = await n2m.pageToMarkdown(page.id)
+  const { parent: mdString } = n2m.toMarkdownString(mdblocks)
 
-  const estimatedReadingTime = readingTime(mdString || '').text;
+  const estimatedReadingTime = readingTime(mdString || '').text
 
   // Download Cover Image
-  const coverFileName = page.cover ? await downloadImage(page.cover, { isCover: true }) : '';
-  if (coverFileName) console.info("Cover image downloaded:", coverFileName)
+  const coverFileName = page.cover
+    ? await downloadImage(page.cover, { isCover: true })
+    : ''
+  if (coverFileName) console.info('Cover image downloaded:', coverFileName)
 
   // Generate page contents (frontmatter, MDX imports, + converted Notion markdown)
   const pageContents = `---
@@ -153,11 +165,15 @@ import Image from '../../components/Image.astro';
 ${mdString}
 `
 
-  if (mdString) fs.writeFileSync(`${process.cwd()}/${POSTS_PATH}/${page.slug}.mdx`, pageContents);
+  if (mdString)
+    fs.writeFileSync(
+      `${process.cwd()}/${POSTS_PATH}/${page.slug}.mdx`,
+      pageContents
+    )
   else console.log(`No content for page ${page.id}`)
 
   console.debug(`Sleeping for ${THROTTLE_DURATION} ms...\n`)
-  await delay(THROTTLE_DURATION); // Need to throttle requests to avoid rate limiting
+  await delay(THROTTLE_DURATION) // Need to throttle requests to avoid rate limiting
 }
 
-console.info("Successfully synced posts with Notion")
+console.info('Successfully synced posts with Notion')
