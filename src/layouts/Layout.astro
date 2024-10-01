@@ -1,5 +1,6 @@
 ---
 import { ModeToggle } from '@/components/ModeToogle'
+import { ViewTransitions } from 'astro:transitions'
 
 import '@/styles/globals.css'
 
@@ -44,6 +45,8 @@ const { title, description, image = '/me.png' } = Astro.props
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={new URL(image, Astro.url)} />
 
+    <ViewTransitions />
+
      <!-- Google tag (gtag.js) -->
      <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-WWQ5YE8B36"></script>
      <script is:inline>
@@ -60,5 +63,16 @@ const { title, description, image = '/me.png' } = Astro.props
       <ModeToggle className="z-10 fixed bottom-1 right-1 md:top-6 md:right-6 md:absolute" client:only="react" />
       <slot/>
     </div>
+
+    <script is:inline>
+      function applyTheme() {
+        localStorage.theme === 'dark'
+          ? document.documentElement.classList.add("dark")
+          : document.documentElement.classList.remove("dark");
+      }
+    
+      document.addEventListener('astro:after-swap', applyTheme);
+      applyTheme();
+    </script>
   </body>
 </html>
