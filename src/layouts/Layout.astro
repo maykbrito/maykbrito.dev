@@ -1,5 +1,4 @@
 ---
-import { ViewTransitions } from 'astro:transitions'
 import { ModeToggle } from '@/components/ModeToogle'
 
 import '@/styles/globals.css'
@@ -44,7 +43,6 @@ const { title, description, image = '/me.png' } = Astro.props
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={new URL(image, Astro.url)} />
-    <ViewTransitions />
 
      <!-- Google tag (gtag.js) -->
      <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-WWQ5YE8B36"></script>
