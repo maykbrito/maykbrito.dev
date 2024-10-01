@@ -19,6 +19,6 @@ export default defineConfig({
     mdx(),
     svelte(),
   ],
-  output: 'server',
+  output: 'static',
   adapter: netlify(),
 })
