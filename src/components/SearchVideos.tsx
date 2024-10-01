@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { dayjs } from '@/lib/dayjs'
 
 const options = {
-  keys: ['title', 'description'],
+  keys: ['data.title', 'data.description'],
   includeMatches: true,
   minMatchCharLength: 2,
 }
@@ -13,7 +13,7 @@ export function SearchVideos({ searchList, placeholder }: any) {
 
   const fuse = new Fuse(searchList, options)
 
-  const posts = fuse
+  const videos = fuse
     .search(query)
     .map(result => result.item)
     .slice(0, 10)
@@ -34,41 +34,41 @@ export function SearchVideos({ searchList, placeholder }: any) {
         id="search"
         value={query}
         onChange={handleOnSearch}
-        placeholder={placeholder ? placeholder : "Pesquise por vídeos"}
+        placeholder={placeholder ? placeholder : 'Pesquise por vídeos'}
       />
       {query.length > 1 && (
         <p className="my-4">
-          Encontrado {posts.length} {posts.length === 1 ? 'resultado' : 'resultados'} para
-          '{query}'
+          Encontrado {videos.length}{' '}
+          {videos.length === 1 ? 'resultado' : 'resultados'} para '{query}'
         </p>
       )}
 
       <ul className="list-none">
-        {posts &&
-          posts.map((post: any) => (
-            <li className="py-4 border-b" key={post.videoId}>
+        {videos.length > 0 &&
+          videos.map(({ data: video }: any) => (
+            <li className="py-4 border-b" key={video.videoId}>
               <a
-                className='flex gap-4'
-                target='_blank' 
+                className="flex gap-4"
+                target="_blank"
                 rel="noreferrer noopenner"
-                href={`https://www.youtube.com/watch?v=${post.videoId}`}>
+                href={`https://www.youtube.com/watch?v=${video.videoId}`}
+              >
+                <img
+                  className="w-12 h-12 rounded-md object-cover shrink-0"
+                  src={video.thumbnails.medium.url}
+                  alt="cover"
+                />
 
-              
-              <img 
-                className='w-12 h-12 rounded-md object-cover shrink-0'
-              src={post.thumbnails.medium.url} alt="cover" />
+                <div className="space-y-4 flex-1">
+                  <p>{video.title}</p>
 
-              <div className='space-y-4 flex-1'>
-                <p>{post.title}</p>
-
-                <p className="text-sm text-muted-foreground">
-                  {post.description.slice(0, 140)}...
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 text-right">
-                  postado {dayjs(post.publishedAt).fromNow()}
-                </p>
-              </div>
-
+                  <p className="text-sm text-muted-foreground">
+                    {video.description.slice(0, 140)}...
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 text-right">
+                    {dayjs(video.publishedAt).fromNow()}
+                  </p>
+                </div>
               </a>
             </li>
           ))}

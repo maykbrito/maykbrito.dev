@@ -6,11 +6,17 @@ import Layout from '@/layouts/Layout.astro'
 import VideoList from '@/components/VideoList'
 import { SearchVideos } from '@/components/SearchVideos'
 
-const apiURL = new URL("/api", Astro.url)
-// const playlistId = "PLeLKux5eT3kaXJ4p_P96I9lr7qEpnbWTY" // playlist iniciantes
-// get playlist of videos only: https://stackoverflow.com/questions/19795987/youtube-channel-and-playlist-id-prefixes
-const playlistId = "UULFkr-unKyg_SiEzUwUY_uluQ"
-const videos = await fetch(`${apiURL.href}/fetch-youtube-playlist/?id=${playlistId}`).then(res => res.json())
+// const apiURL = new URL("/api", Astro.url)
+// // const playlistId = "PLeLKux5eT3kaXJ4p_P96I9lr7qEpnbWTY" // playlist iniciantes
+// // get playlist of videos only: https://stackoverflow.com/questions/19795987/youtube-channel-and-playlist-id-prefixes
+// const playlistId = "UULFkr-unKyg_SiEzUwUY_uluQ"
+// const videos = await fetch(`${apiURL.href}/fetch-youtube-playlist/?id=${playlistId}`).then(res => res.json())
+
+import { getCollection } from 'astro:content'
+
+// Get all entries from a collection.
+// Requires the name of the collection as an argument.
+const videos = await getCollection('videos')
 ---
 <Layout title={`${config.head.title} | Videos`} description="Crio vídeos para lembrar, explicar e aperfeiçoar o aprendizado de conceitos da programação WEB" image={config.head.image}>
     <Header />

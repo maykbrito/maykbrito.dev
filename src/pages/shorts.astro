@@ -6,10 +6,8 @@ import Layout from '@/layouts/Layout.astro'
 import { SearchShorts } from '@/components/SearchShorts'
 import ShortsList from '@/components/ShortsList'
 
-const apiURL = new URL("/api", Astro.url)
-// get playlist shorts: https://stackoverflow.com/questions/19795987/youtube-channel-and-playlist-id-prefixes
-const playlistId = "UUSHkr-unKyg_SiEzUwUY_uluQ"
-const videos = await fetch(`${apiURL.href}/fetch-youtube-playlist/?id=${playlistId}`).then(res => res.json())
+import { getCollection } from 'astro:content'
+const videos = await getCollection('shorts')
 ---
 <Layout title={`${config.head.title} | Shorts`} description="Recortes de vídeos do canal Mayk Brito" image={config.head.image}>
     <Header />
