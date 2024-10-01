@@ -20,5 +20,4 @@ export default defineConfig({
     svelte(),
   ],
   output: 'static',
-  adapter: netlify(),
 })
