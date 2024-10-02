@@ -27,7 +27,7 @@ if (frontmatter?.cover) {
 }
 
 const dateStr = new Date(
-  frontmatter.publish_date! || frontmatter.created_time!
+  frontmatter.publish_date || frontmatter.created_time
 ).toLocaleString('pt-BR', {
   month: 'short',
   day: 'numeric',
@@ -172,7 +172,7 @@ const dateStr = new Date(
 </script>
 
 <style is:global>
-  code {
+  code:not(pre code) {
     @apply dark:bg-gray-700 rounded px-2 bg-orange-50;
   }
 </style>

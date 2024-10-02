@@ -1,10 +1,25 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { dayjs } from '@/lib/dayjs'
-import { Button } from './ui/button'
 
 export default function ({ ...props }) {
   const showItems = 10
   const [currentItems, setCurrentItems] = useState(showItems)
+  const loader = useRef(null)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(handleObserver, { threshold: 1 })
+    if (loader.current) {
+      observer.observe(loader.current)
+    }
+    return () => observer.disconnect()
+  }, [])
+
+  const handleObserver = (entities: any) => {
+    const target = entities[0]
+    if (target.isIntersecting && currentItems < props.videos.length) {
+      setCurrentItems(prevItems => prevItems + showItems)
+    }
+  }
 
   return (
     <>
@@ -40,15 +55,7 @@ export default function ({ ...props }) {
         </a>
       ))}
 
-      {currentItems < props.videos.length && (
-        <Button
-          className="w-full"
-          variant="outline"
-          onClick={() => setCurrentItems(() => currentItems + showItems)}
-        >
-          Mostrar mais
-        </Button>
-      )}
+      <div ref={loader} />
     </>
   )
 }

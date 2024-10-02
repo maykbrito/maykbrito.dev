@@ -1,12 +1,27 @@
 import type { Post } from '@/lib/types'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Tags from './Tags'
-import { Button } from './ui/button'
 
 export default function Posts({ ...props }) {
   const posts = props.posts
   const showItems = 3
   const [currentItems, setCurrentItems] = useState(showItems)
+  const loader = useRef(null)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(handleObserver, { threshold: 1 })
+    if (loader.current) {
+      observer.observe(loader.current)
+    }
+    return () => observer.disconnect()
+  }, [])
+
+  const handleObserver = (entities: any) => {
+    const target = entities[0]
+    if (target.isIntersecting && currentItems < posts.length) {
+      setCurrentItems(prevItems => prevItems + showItems)
+    }
+  }
 
   return (
     <>
@@ -15,12 +30,9 @@ export default function Posts({ ...props }) {
           <a
             key={post.frontmatter.id}
             href={`/blog/${post.frontmatter.slug}`}
-            className={
-              'post-link-container block mb-4 ' +
-              post.frontmatter.tags
-                .map((tag: { id: string }) => `post-link-tag-${tag.id}`)
-                .join(' ')
-            }
+            className={`post-link-container block mb-4 ${post.frontmatter.tags
+              .map((tag: { id: string }) => `post-link-tag-${tag.id}`)
+              .join(' ')}`}
           >
             <article className="transform rounded-lg border border-gray-200 bg-white shadow-md transition duration-100 ease-in dark:border-gray-700 dark:bg-gray-950 sm:hover:scale-[102%] lg:hover:scale-105">
               <div
@@ -63,16 +75,7 @@ export default function Posts({ ...props }) {
             </article>
           </a>
         ))}
-
-      {currentItems < posts.length && (
-        <Button
-          className="w-full"
-          variant="outline"
-          onClick={() => setCurrentItems(() => currentItems + showItems)}
-        >
-          Load More
-        </Button>
-      )}
+      <div ref={loader} />
     </>
   )
 }
