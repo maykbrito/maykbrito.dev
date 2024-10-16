@@ -16,11 +16,22 @@ export default {
   },
   links: {
     primary: [
+      // {
+      //   url: 'https://www.rocketseat.com.br/curso/php?utm_source=mayk&utm_medium=influencer&utm_campaign=lead&utm_term=curso-php&utm_content=curso-php-lead-influencer-lp_inscricao',
+      //   title: '✨ Estude PHP ✨',
+      //   description:
+      //     'Evento gratuito para você construir um projeto em 3 dias. <b>No ar por pouco tempo!</b>',
+      //   colors: {
+      //     background:
+      //       'bg-gradient-to-br from-[#e254ff] to-[#5f75f2] hover:from-[#9956f6] hover:to-[#29e0a9] ',
+      //     title: 'text-black',
+      //     description: 'text-gray-800',
+      //   },
+      // },
       {
-        url: 'https://www.rocketseat.com.br/curso/php?utm_source=mayk&utm_medium=influencer&utm_campaign=lead&utm_term=curso-php&utm_content=curso-php-lead-influencer-lp_inscricao',
-        title: '✨ Estude PHP ✨',
-        description:
-          'Evento gratuito para você construir um projeto em 3 dias. <b>No ar por pouco tempo!</b>',
+        url: 'https://rseat.in/ebook_SemMisterios',
+        title: '✨ Ebook: Programação sem mistérios ✨',
+        description: 'O guia para iniciantes em programação',
         colors: {
           background:
             'bg-gradient-to-br from-[#e254ff] to-[#5f75f2] hover:from-[#9956f6] hover:to-[#29e0a9] ',
