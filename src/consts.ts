@@ -17,9 +17,9 @@ export default {
   links: {
     primary: [
       {
-        url: 'https://youtube.com/rocketseat',
+        url: 'https://app.rocketseat.com.br',
         title: '✨ Semana de live ✨',
-        description: 'Lives no canal da Rocketseat',
+        description: 'Veja o calendário de lives no canal da Rocketseat',
         colors: {
           background:
             'bg-gradient-to-br from-[#e254ff] to-[#5f75f2] hover:from-[#9956f6] hover:to-[#29e0a9] ',
@@ -31,12 +31,6 @@ export default {
         url: 'https://rseat.in/ebook_SemMisterios',
         title: '✨ Ebook: Programação sem mistérios ✨',
         description: 'O guia para iniciantes em programação',
-        colors: {
-          background:
-            'bg-gradient-to-br from-[#e254ff] to-[#5f75f2] hover:from-[#9956f6] hover:to-[#29e0a9] ',
-          title: 'text-black',
-          description: 'text-gray-800',
-        },
       },
       {
         url: 'https://one.maykbrito.dev',
