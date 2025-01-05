@@ -1,0 +1,73 @@
+---
+import Header from '@/components/Header.astro'
+import config from '@/consts.ts'
+import partnerships from '@/data/partnerships.ts'
+import Layout from '@/layouts/Layout.astro'
+---
+
+<Layout
+  title="Parcerias e Cupons"
+  description="Confira nossos parceiros e cupons de desconto"
+  image={config.head.image}
+>
+  <div class="page max-w-lg mx-auto px-4 md:px-0 antialiased">
+    <Header />
+
+    <main class="py-8">
+      <h1 class="text-3xl font-bold text-center mb-8">Parcerias e Cupons</h1>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {
+          partnerships.map((partner) => (
+            <div class="border rounded-lg overflow-hidden  shadow-sm hover:shadow-md transition-shadow">
+              <div class="p-4 flex flex-col h-full">
+                <img
+                  class="h-auto w-full rounded-md object-contain aspect-video mb-4"
+                  src={partner.imgSrc}
+                  alt={partner.name}
+                />
+
+                <div class="flex-1 mb-2">  
+                  <h2 class="text-xl font-bold mb-2">{partner.name}</h2>
+                  <p class="text-gray-600 dark:text-gray-300 mb-4">
+                    {partner.description}
+                  </p>
+
+                  {partner.couponCode || partner.discount && (
+                    <div class="bg-gray-100 dark:bg-gray-700/40 rounded-md p-3 mb-4 space-y-2 text-center">
+                      {partner.couponCode && (
+                        <p class="text-sm font-medium">Cupom de desconto:</p>
+                        <p>
+                          <code class="bg-gray-200 dark:bg-gray-600 px-3 py-1 rounded text-md font-mono">
+                            {partner.couponCode}
+                          </code>
+                        </p>
+                      )}
+
+                      {partner.discount && (
+                        <p class="text-green-600 dark:text-green-400 font-bold">
+                          {partner.discount}
+                        </p>
+                      )}
+
+                    </div>
+                  )}
+                </div>
+
+                <a
+                  href={partner.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="block w-full text-center bg-gray-100/60 hover:bg-gray-200/60 text-black dark:bg-gray-800/60 dark:hover:bg-gray-800 dark:text-white font-medium py-2 px-4 rounded-md transition-colors mt-auto"
+                >
+                  Aproveitar Oferta
+                </a>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </main>
+  </div>
+</Layout>
+
