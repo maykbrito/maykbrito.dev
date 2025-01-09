@@ -80,11 +80,11 @@ export default function NavigationMenuDemo() {
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuLink
-              href="/cupons/"
-              active={isActive('/cupons/')}
+              href="/ofertas/"
+              active={isActive('/ofertas/')}
               className={navigationMenuTriggerStyle()}
             >
-              Cupons
+              Ofertas
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
