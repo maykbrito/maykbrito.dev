@@ -1,0 +1,99 @@
+---
+layout: "../../layouts/PostLayout.astro"
+id: "fc864054-601f-4b37-8857-9662e8a00d47"
+slug: "criando-gifs-animados-programaticamente"
+title: "Criando Gifs Animados programaticamente"
+cover: ""
+tags: []
+created_time: 2023-12-31T17:25:00.000Z
+last_edited_time: 2023-12-31T19:24:00.000Z
+icon: null
+archived: false
+status: "draft"
+publish_date: false
+description: "undefined"
+reading_time: "2 min read"
+---
+import Image from '../../components/Image.astro';
+
+
+## Requisitos
+
+- ffmpeg
+- ImageMagick
+
+## Passo a passo
+
+- [create](http://creategifenc.sh/)[`gifenc.sh`](http://creategifenc.sh/) and add code bellow
+- give it permission to run with`chmod +x ./gifenc.sh`
+- example of running it `./gifenc.sh input.mp4 output.gif 720 5`
+
+## O código
+
+
+```shell
+#!/bin/sh
+palette="palette.png"
+filters="fps=$4,scale=$3:-1:flags=lanczos"
+delay=100/$3
+
+
+# ⭐️
+# input 4.4mb 
+# output w720 fps 5 = 524kb
+# ffmpeg -v warning -i "$1" \
+# -vf "$filters,palettegen=max_colors=128" \
+# -y "$palette"
+# ffmpeg -v warning -y -i "$1" -i $palette \
+# -lavfi "$filters [x]; [x][1:v] paletteuse" \
+# -c:v pam -f image2pipe - | \
+#     convert -delay $delay - -loop 0 -layers Optimize "$2"
+
+# ⭐️⭐️
+# input 4.4mb 
+# output w720 fps 5 = 515kb w/ a little speed
+# simple pipe to convert
+# ffmpeg -y -i "$1" -vf "fps=$4,scale=$3:-1:flags=lanczos" -c:v pam \
+#     -f image2pipe - | \
+#     convert -delay $delay - -loop 0 -layers optimize "$2"
+
+# ⭐️⭐️⭐️
+# input 4.4mb 
+# output w720 fps 5 = 488kb w/o speed
+
+# ffmpeg -y -i "$1" \
+# -filter_complex "fps=$4,scale=$3:-1:flags=lanczos,\
+# split[s0][s1];[s0]palettegen=max_colors=128[p];[s1][p]paletteuse=dither=floyd_steinberg" \
+# -loop 0 \
+# "$2"
+
+# ⭐️⭐️⭐️⭐️ 
+# input 4.4mb 
+# output w720 fps 5 = 438kb w/o speed
+# filter complex with fps limit and scale (-1: no scale; "iw*.5": half width size ..)/auto create pallete with max_colors and dither (sierra2_4a, floyd_steinberg, bayer or none)
+
+# ffmpeg -y -i "$1" \
+# -filter_complex "fps=$4,scale=$3:-1:flags=lanczos,\
+# split[s0][s1];[s0]palettegen=max_colors=128[p];[s1][p]paletteuse=dither=bayer:bayer_scale=4" \
+# -loop 0 \
+# "$2"
+
+# ⭐️⭐️⭐️⭐️⭐️ 
+# input 4.4mb 
+# output w720 fps 5 = 371kb w/o speed
+# filter complex with fps limit and scale (-1: no scale; "iw*.5": half width size ..)/auto create pallete with max_colors and dither (sierra2_4a, floyd_steinberg, bayer or none)
+
+ffmpeg -y -i "$1" \
+-filter_complex "fps=$4,scale=$3:-1:flags=lanczos,\
+split[s0][s1];[s0]palettegen=max_colors=32[p];[s1][p]paletteuse=dither=floyd_steinberg" \
+-loop 0 \
+"$2"
+```
+
+
+### Referências
+
+- [https://superuser.com/questions/556029/how-do-i-convert-a-video-to-gif-using-ffmpeg-with-reasonable-quality](https://superuser.com/questions/556029/how-do-i-convert-a-video-to-gif-using-ffmpeg-with-reasonable-quality)
+- [https://superuser.com/questions/1049606/reduce-generated-gif-size-using-ffmpeg](https://superuser.com/questions/1049606/reduce-generated-gif-size-using-ffmpeg)
+- [https://blog.pkh.me/p/21-high-quality-gif-with-ffmpeg.html](https://blog.pkh.me/p/21-high-quality-gif-with-ffmpeg.html)
+
