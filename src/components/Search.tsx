@@ -45,17 +45,16 @@ export default function Search({ searchList }: any) {
       )}
 
       <ul className="list-none">
-        {posts &&
-          posts.map((post: any) => (
-            <li className="py-2" key={post.frontmatter.slug}>
-              <a href={`/blog/${post.frontmatter.slug}`}>
-                {post.frontmatter.title}
-              </a>
-              <p className="text-sm text-muted-foreground">
-                {post.frontmatter.description}
-              </p>
-            </li>
-          ))}
+        {posts?.map((post: any) => (
+          <li className="py-2" key={post.frontmatter.slug}>
+            <a href={`/blog/${post.frontmatter.slug}`}>
+              {post.frontmatter.title}
+            </a>
+            <p className="text-sm text-muted-foreground">
+              {post.frontmatter.description}
+            </p>
+          </li>
+        ))}
       </ul>
     </>
   )

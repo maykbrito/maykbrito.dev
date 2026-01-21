@@ -1,6 +1,6 @@
 ---
 import Header from '@/components/Header.astro'
-import config from '@/consts.ts'
+import config from '@/data/config'
 import partnerships from '@/data/partnerships.ts'
 import Layout from '@/layouts/Layout.astro'
 ---
@@ -22,7 +22,7 @@ import Layout from '@/layouts/Layout.astro'
             <div class="border rounded-lg overflow-hidden  shadow-sm hover:shadow-md transition-shadow">
               <div class="p-4 flex flex-col h-full">
                 <img
-                  class="h-auto w-full rounded-md object-contain aspect-video mb-4"
+                  class="h-auto w-full rounded-md object-contain aspect-video mb-4 bg-white p-4"
                   src={partner.imgSrc}
                   alt={partner.name}
                 />

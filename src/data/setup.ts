@@ -71,27 +71,27 @@ export default [
       'https://m.media-amazon.com/images/I/61aUBxqc5PL.__AC_SY445_SX342_QL70_ML2_.jpg',
     url: 'https://www.amazon.com.br/Apple-MacBook-16-polegadas-Processador-GPU-16%25E2%2580%2591core/dp/B09L5969NZ/?&_encoding=UTF8&tag=maykbrito0a-20&linkCode=ur2&linkId=d9952142aedaf356c80fcffd00c8dada&camp=1789&creative=9325',
   },
-  {
-    name: 'Óculos anti luz azul lente amarela',
-    imgSrc:
-      'https://http2.mlstatic.com/D_NQ_NP_667340-MLB75231032481_032024-O.webp',
-    url: 'https://produto.mercadolivre.com.br/MLB-1919131534-oculos-anti-raios-azuis-gamerleituranoturnotv-_JM?attributes=COLOR_SECONDARY_COLOR%3ASDEgLSBQcmV0byBjb20gTGVudGVzIEFtYXJlbGFz&quantity=1',
-  },
-  {
-    name: 'Óculos lente azul',
-    imgSrc:
-      'https://acdn.mitiendanube.com/stores/001/320/441/products/azul-1-eae8f262685ea62bc217043503492200-480-0.webp',
-    url: 'https://lupada.com.br/produtos/oculos-jaguar-2-0/',
-  },
+  // {
+  //   name: 'Óculos anti luz azul lente amarela',
+  //   imgSrc:
+  //     'https://http2.mlstatic.com/D_NQ_NP_667340-MLB75231032481_032024-O.webp',
+  //   url: 'https://produto.mercadolivre.com.br/MLB-1919131534-oculos-anti-raios-azuis-gamerleituranoturnotv-_JM?attributes=COLOR_SECONDARY_COLOR%3ASDEgLSBQcmV0byBjb20gTGVudGVzIEFtYXJlbGFz&quantity=1',
+  // },
+  // {
+  //   name: 'Óculos lente azul',
+  //   imgSrc:
+  //     'https://acdn.mitiendanube.com/stores/001/320/441/products/azul-1-eae8f262685ea62bc217043503492200-480-0.webp',
+  //   url: 'https://lupada.com.br/produtos/oculos-jaguar-2-0/',
+  // },
   {
     name: 'Hollyland Lark M2',
     imgSrc: 'https://m.media-amazon.com/images/I/61vXwLemjJL._AC_SX522_.jpg',
     url: 'https://www.amazon.com.br/Hollyland-Transmiss%C3%A3o-Cancelamento-Compat%C3%ADvel-Vivo-Preto/dp/B0CP7QXWPN/',
   },
-  {
-    name: 'Mesa de escritório Silk',
-    imgSrc:
-      'https://acdn.mitiendanube.com/stores/716/003/products/imgs_estrutura_high_preta-001-b2162274cbbc0ba4d016839109691147-640-0.webp',
-    url: 'https://loja.slik.com.br/produtos/slikdesk-high-mesa-com-regulagem-de-altura-eletrica/',
-  },
+  // {
+  //   name: 'Mesa de escritório Silk',
+  //   imgSrc:
+  //     'https://acdn.mitiendanube.com/stores/716/003/products/imgs_estrutura_high_preta-001-b2162274cbbc0ba4d016839109691147-640-0.webp',
+  //   url: 'https://loja.slik.com.br/produtos/slikdesk-high-mesa-com-regulagem-de-altura-eletrica/',
+  // },
 ]

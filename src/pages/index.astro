@@ -1,11 +1,11 @@
 ---
-import Header from '@/components/Header.astro'
-import Me from '@/components/Me'
-import config from '@/consts.ts'
-import Layout from '@/layouts/Layout.astro'
-import { cn } from '@/lib/utils'
+import Header from "@/components/Header.astro";
+import Me from "@/components/Me";
+import config from "@/data/config";
+import Layout from "@/layouts/Layout.astro";
+import { cn } from "@/lib/utils";
 
-const { links } = config
+const { links } = config;
 ---
 
 <Layout
@@ -26,7 +26,6 @@ const { links } = config
             rel="noreferrer noopener"
             target="_blank">@rocketseat</a
           >.<br />
-          😍 Apaixonado por ensino.<br />
           ⭐️ Descomplicando a Programação WEB.<br />
           💡 Gosto de falar sobre hard e soft skills.<br />
         </p>
@@ -38,7 +37,7 @@ const { links } = config
             <a
               class={cn(
                 `border rounded border-gray-300 p-4 hover:bg-gray-100 dark:hover:bg-gray-800 dark:border-gray-800`,
-                link.colors?.background
+                link.colors?.background,
               )}
               href={link.url}
               target="_blank"
@@ -46,13 +45,18 @@ const { links } = config
               <strong class={cn(`font-bold text-lg`, link.colors?.title)}>
                 {link.title}
               </strong>
-              <p class={cn("text-muted-foreground", link.colors?.description)} set:html={link.description} />
+              <p
+                class={cn("text-muted-foreground", link.colors?.description)}
+                set:html={link.description}
+              />
             </a>
           ))
         }
       </main>
 
-      <footer class="flex flex-wrap gap-2 justify-center mb-20 max-w-[180px] mx-auto sm:max-w-max">
+      <footer
+        class="flex flex-wrap gap-2 justify-center mb-20 max-w-[180px] mx-auto sm:max-w-max"
+      >
         {
           links.social.map((link) => (
             <a class="border rounded-md p-3" href={link.url} target="_blank">

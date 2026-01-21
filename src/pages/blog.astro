@@ -1,61 +1,64 @@
 ---
-import { getImage } from 'astro:assets'
-import { postImageImport } from '@/lib/images.mjs'
+import { getImage } from "astro:assets";
+import { postImageImport } from "@/lib/images.mjs";
 
-import Header from '@/components/Header.astro'
-import Posts from '@/components/Posts.tsx'
-import SearchBar from '@/components/SearchBar.astro'
-import config from '@/consts.ts'
-import Layout from '@/layouts/Layout.astro'
+import Header from "@/components/Header.astro";
+import Posts from "@/components/Posts.tsx";
+import SearchBar from "@/components/SearchBar.astro";
+import config from "@/data/config";
+import Layout from "@/layouts/Layout.astro";
 
-const posts = await Astro.glob('./blog/*.mdx')
+const posts = await Astro.glob("./blog/*.mdx");
 const sortedPosts = await Promise.all(
   posts
     .sort(
       (a, b) =>
         +new Date(a.frontmatter.publish_date! || a.frontmatter.created_time!) -
-        +new Date(b.frontmatter.publish_date! || b.frontmatter.created_time!)
+        +new Date(b.frontmatter.publish_date! || b.frontmatter.created_time!),
     )
     .reverse()
-    .map(async post => {
-      const { cover } = post?.frontmatter
+    .map(async (post) => {
+      const { cover } = post?.frontmatter;
       post.frontmatter.dateStr = new Date(
-        post.frontmatter.publish_date! || post.frontmatter.created_time!
-      ).toLocaleString('pt-BR', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      })
+        post.frontmatter.publish_date! || post.frontmatter.created_time!,
+      ).toLocaleString("pt-BR", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
 
-      post.frontmatter.optimizedCoverImage = null
-      post.frontmatter.coverImageSrc = ''
+      post.frontmatter.optimizedCoverImage = null;
+      post.frontmatter.coverImageSrc = "";
 
       if (cover) {
-        const results = await postImageImport(cover)
-        const dynamicImg = results?.default
+        const results = await postImageImport(cover);
+        const dynamicImg = results?.default;
 
         post.frontmatter.optimizedCoverImage = cover
           ? await getImage({ src: dynamicImg, width: 1400 })
-          : ''
+          : "";
         post.frontmatter.coverImageSrc = (
           post.frontmatter.optimizedCoverImage as any
-        ).src
+        ).src;
       }
 
-      return post
-    })
-)
+      return post;
+    }),
+);
 ---
-<Layout title={`${config.head.title} | Blog`} description="Escrevo sempre que possível para lembrar, explicar e aperfeiçoar o aprendizado de conceitos da programação WEB" image={config.head.image}>
-    <Header />
 
-    
-    <div class="page max-w-lg mx-auto px-10 md:px-0">  
+<Layout
+  title={`${config.head.title} | Blog`}
+  description="Escrevo sempre que possível para lembrar, explicar e aperfeiçoar o aprendizado de conceitos da programação WEB"
+  image={config.head.image}
+>
+  <Header />
 
-      <SearchBar/>
+  <div class="page max-w-lg mx-auto px-10 md:px-0">
+    <SearchBar />
 
-      <main class="grid gap-2 my-10">
-        <Posts posts={sortedPosts} client:load/>
-      </main>
-    </div>
+    <main class="grid gap-2 my-10">
+      <Posts posts={sortedPosts} client:load />
+    </main>
+  </div>
 </Layout>

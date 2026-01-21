@@ -5,7 +5,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
-import { Menu as MenuIcon } from 'lucide-react'
+import { Gift, Home, Menu as MenuIcon } from 'lucide-react'
 import { useState } from 'react'
 
 export default function NavigationMenuDemo() {
@@ -39,7 +39,7 @@ export default function NavigationMenuDemo() {
               active={isActive('/')}
               className={navigationMenuTriggerStyle()}
             >
-              Home
+              <Home size={16} />
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
@@ -62,11 +62,11 @@ export default function NavigationMenuDemo() {
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuLink
-              href="/shorts/"
-              active={isActive('/shorts/')}
+              href="/projects/"
+              active={isActive('/projects/')}
               className={navigationMenuTriggerStyle()}
             >
-              Shorts
+              Projects
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
@@ -83,8 +83,9 @@ export default function NavigationMenuDemo() {
               href="/ofertas/"
               active={isActive('/ofertas/')}
               className={navigationMenuTriggerStyle()}
+              title="Ofertas e parcerias"
             >
-              Ofertas
+              <Gift size={16} />
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
