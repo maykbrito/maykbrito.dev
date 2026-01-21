@@ -12,7 +12,7 @@ type Link = {
   url: string
   title: string
   description?: string
-  icon?: React.FC
+  icon?: React.ComponentType<any>
   colors?: {
     background: string
     title: string

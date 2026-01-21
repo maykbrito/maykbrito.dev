@@ -58,12 +58,15 @@ const { links } = config;
         class="flex flex-wrap gap-2 justify-center mb-20 max-w-[180px] mx-auto sm:max-w-max"
       >
         {
-          links.social.map((link) => (
-            <a class="border rounded-md p-3" href={link.url} target="_blank">
-              <link.icon strokeWidth={1} />
-              <p class="sr-only">{link.title}</p>
-            </a>
-          ))
+          links.social.map((link) => {
+            const Icon = link.icon;
+            return (
+              <a class="border rounded-md p-3" href={link.url} target="_blank">
+                {Icon && <Icon strokeWidth={1} />}
+                <p class="sr-only">{link.title}</p>
+              </a>
+            );
+          })
         }
       </footer>
     </div>
