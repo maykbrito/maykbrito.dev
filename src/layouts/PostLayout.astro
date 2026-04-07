@@ -152,10 +152,9 @@ const dateStr = new Date(
 
       {
         Astro.props.headings.length > 0 && (
-          <aside class="hidden lg:block lg:w-[350px]">
+          <aside class="hidden lg:block lg:w-[280px] shrink-0">
             <TableOfContents
               headings={Astro.props.headings}
-              cardClass="format -mt-8 w-fit sticky top-4 w-full"
             />
           </aside>
         )

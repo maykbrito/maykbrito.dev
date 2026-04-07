@@ -1,68 +1,147 @@
 ---
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-
-const {
-  headings,
-  olClass = 'leading-tight',
-  aClass = 'no-underline dark:text-gray-400',
-  cardClass = 'format -mt-8 w-fit',
-} = Astro.props
-const tableOfContents = generateTOC(headings)
-
-function generateTOC(
-  headings: any,
-  options = {
-    olClass,
-    aClass,
-  }
-) {
-  if (headings.length === 0) {
-    console.warn('No Headings found')
-    return ''
-  }
-
-  const { olClass, aClass } = options
-
-  let toc = `<ol class='${olClass}'>`
-
-  let currentLevel = 1
-
-  for (let i = 0; i < headings.length; i++) {
-    const heading = headings[i]
-    const level = Number(heading.depth)
-
-    // Adjust the indentation depending upon whether we are moving in/out/within a level
-    if (level > currentLevel) {
-      while (level > currentLevel) {
-        toc += '<ol>'
-        currentLevel++
-      }
-    } else if (level < currentLevel) {
-      while (level < currentLevel) {
-        toc += '</ol>'
-        currentLevel--
-      }
-    }
-    toc += `<li class="mt-0 pt-4"><a href='#${heading.slug}' class='${aClass}'>${heading.text}</a></li>`
-  }
-
-  // If we're not back at level 1, we need to close some tags
-  while (currentLevel > 1) {
-    toc += '</ol>'
-    currentLevel--
-  }
-
-  toc += '</ol>'
-
-  return toc
-}
+const { headings } = Astro.props
 ---
 
-<Card className={cardClass}>
-  <CardHeader>
-    <CardTitle>Neste artigo</CardTitle>
-  </CardHeader>
-  <CardContent>
-    <div class="table-of-content" set:html={tableOfContents} />
-  </CardContent>
-</Card>
+<nav class="toc-wrapper sticky top-4 -mt-8">
+  <div class="rounded-lg border bg-card shadow-sm p-6">
+    <h2 class="text-lg font-semibold mb-4">Neste artigo</h2>
+    <ul class="toc-list space-y-1 max-h-[calc(100vh-8rem)] overflow-y-auto pr-2">
+      {headings.map((heading: { depth: number; slug: string; text: string }) => (
+        <li>
+          <a
+            href={`#${heading.slug}`}
+            class:list={[
+              'toc-link block py-1 border-l-2 transition-all duration-200',
+              'text-gray-400 border-transparent hover:text-gray-200 hover:border-gray-500',
+              {
+                'pl-3 text-sm font-medium': heading.depth === 2,
+                'pl-6 text-xs': heading.depth === 3,
+                'pl-9 text-xs': heading.depth === 4,
+                'pl-12 text-xs': heading.depth >= 5,
+              },
+            ]}
+            data-heading-link
+            data-heading-slug={heading.slug}
+          >
+            {heading.text}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</nav>
+
+<style>
+  .toc-link.active {
+    @apply text-yellow-400 border-yellow-400 font-semibold;
+  }
+
+  .toc-list::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .toc-list::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .toc-list::-webkit-scrollbar-thumb {
+    @apply bg-gray-700 rounded-full;
+  }
+
+  .toc-list::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-600;
+  }
+</style>
+
+<script>
+  function initTocScrollspy() {
+    const links = document.querySelectorAll<HTMLAnchorElement>('[data-heading-link]')
+    if (links.length === 0) return
+
+    const slugs = Array.from(links).map((link) => link.dataset.headingSlug!)
+    const headingElements = slugs
+      .map((slug) => document.getElementById(slug))
+      .filter(Boolean) as HTMLElement[]
+
+    if (headingElements.length === 0) return
+
+    let activeSlug: string | null = null
+
+    function setActive(slug: string | null) {
+      if (slug === activeSlug) return
+      activeSlug = slug
+
+      links.forEach((link) => {
+        if (link.dataset.headingSlug === slug) {
+          link.classList.add('active')
+          // Scroll the active link into view within the TOC list
+          const tocList = link.closest('.toc-list')
+          if (tocList) {
+            const linkRect = link.getBoundingClientRect()
+            const listRect = tocList.getBoundingClientRect()
+            if (linkRect.top < listRect.top || linkRect.bottom > listRect.bottom) {
+              link.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+            }
+          }
+        } else {
+          link.classList.remove('active')
+        }
+      })
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Find the topmost visible heading
+        const visibleEntries = entries.filter((e) => e.isIntersecting)
+
+        if (visibleEntries.length > 0) {
+          // Pick the one closest to the top of the viewport
+          const topmost = visibleEntries.reduce((a, b) =>
+            a.boundingClientRect.top < b.boundingClientRect.top ? a : b
+          )
+          setActive(topmost.target.id)
+        } else {
+          // If no heading is visible, find the last heading that's above the viewport
+          let lastAbove: string | null = null
+          for (const heading of headingElements) {
+            const rect = heading.getBoundingClientRect()
+            if (rect.top < 100) {
+              lastAbove = heading.id
+            }
+          }
+          if (lastAbove) {
+            setActive(lastAbove)
+          }
+        }
+      },
+      {
+        rootMargin: '-80px 0px -60% 0px',
+        threshold: 0,
+      }
+    )
+
+    headingElements.forEach((el) => observer.observe(el))
+
+    // Set initial active heading
+    let initialActive: string | null = null
+    for (const heading of headingElements) {
+      const rect = heading.getBoundingClientRect()
+      if (rect.top < 150) {
+        initialActive = heading.id
+      }
+    }
+    if (initialActive) {
+      setActive(initialActive)
+    } else if (headingElements.length > 0) {
+      setActive(headingElements[0].id)
+    }
+  }
+
+  // Run on initial load and on Astro page transitions
+  document.addEventListener('astro:page-load', initTocScrollspy)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTocScrollspy)
+  } else {
+    initTocScrollspy()
+  }
+</script>
