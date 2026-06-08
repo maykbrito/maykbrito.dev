@@ -1,0 +1,212 @@
+---
+layout: "../../layouts/PostLayout.astro"
+id: "379121a0-73a1-80de-94a1-f75f11b58b7a"
+slug: "hooks-a-arquitetura-do-wordpress-que-eu-queria-entender-e-ningu-m-me-explicou"
+title: "Hooks: A arquitetura do Wordpress que eu queria entender e ninguém me explicou."
+cover: "/Users/maykbrito/Developer/2510/maykbrito.dev/src/images/posts/f5b3c4c2dff31966952bf3b8e65ad6ce29c300b64a6e6b2615cd08c9ddaf27ce-cover.jpg"
+tags: [{"id":"85ceccfc-4af3-4c3d-a814-2a9dece7768e","name":"System Design","color":"pink"},{"id":"b65d7253-1760-453b-8ca0-f8c3f91fffcc","name":"Code","color":"default"}]
+created_time: 2026-06-08T14:08:00.000Z
+last_edited_time: 2026-06-08T16:42:00.000Z
+icon: null
+archived: false
+status: "published"
+publish_date: 2026-06-08
+description: "Como eu entendi essa arquitetura que sempre achei mágica dentro do motor do Wordpress: os hooks."
+reading_time: "6 min read"
+---
+import Image from '../../components/Image.astro';
+
+
+Vou replicar parte da arquitetura de um dos maiores construtores de sites que já existiu (e que já colocou muito dinheiro no meu bolso, além de deixar muito cliente feliz): [Wordpress](https://wordpress.org/).
+
+
+---
+
+
+## A inspiração
+
+
+Hoje acordei nostálgico. Lembrei que fiz mais de 500 sites em Wordpress (e estou chutando baixo por que encontrei um dos meus HDs de backup de sites que fiz para clientes por mais de 10 anos). 
+
+
+Era uma época simples. Pelo menos eu achava. Um cliente precisava de um site e em poucas horas, já estava pronto. 
+
+
+É que construí um sistema que usava a arquitetura do Wordpress como coração desse sistema. Além da comunidade infinita de plugins que já existiam, construir algo personalizado foi o que mudou meu jogo no uso da ferramenta. 
+
+
+E tem essa coisa que sempre achei mágica: os hooks do Wordpress. 
+
+
+Se você já usou bastante, vai lembrar de algo como
+
+
+```plain text
+Preencha o formulário abaixo: 
+ 
+ [form]
+```
+
+
+Esse `[form]` era um componente completo de formulário feito por algum plugin de terceiros rodando no Wordpress. 
+
+
+Eu vivia me perguntando… Como? Como alguém que não construiu o Wordpress consegue colocar todo um formulário pra rodar nessa parte do site, com apenas esse pedacinho de texto?
+
+
+Claro que com o tempo eu entendi e eu mesmo construí muitas soluções nesse sentido, mas por muitos e muitos anos isso era completamente de outro mundo pra mim.
+
+
+Vamos entender…
+
+
+---
+
+
+## A arquitetura
+
+
+Quando você dá uma primeira olhada no WordPress, ele parece uma plataforma simples de blog. No entanto, por debaixo dessa superfície existe um System Design sofisticado. 
+
+
+Para a gente entender como construir esse sistema extensível de sites, vamos dar uma olhada no que chamo de `Filter Chain Pattern` que vai entregar essa arquitetura pra gente.
+
+
+Vou explicar com uma analogia, depois eu vou te apresentar o código.
+
+
+Suponha que você tenha um site de notícias e no meio de uma notícia, você quer colocar algum anúncio. A gente vê isso em quase todo site de notícias.
+
+
+Então, você vai escrever a notícia normalmente e usar `shortcode` (nome dado para esse carinha aí da frente)`[ads]`. 
+
+
+```plain text
+Notícia do dia é sobre ...
+
+[ads]
+
+Foi que o meliante ...
+```
+
+
+Pense nisso como um atalho para renderizar o seu anúncio aonde você quiser no seu texto.
+
+
+O motor do WordPress conta com os `hooks`. Traduzindo livremente, hook é um gancho. Você tem um gancho para prender alguma coisa, certo? Os hooks funcionam para `actions` e `filters`. 
+
+
+Actions: geralmente são funções em algum momento do fluxo de execução do WordPress. Imagina que alguma ação precisa acontecer após o Wordpress enviar um email, ou antes de iniciar o render do seu conteúdo. 
+
+
+Filter: geralmente modifica um dado, uma informação. Pode ser que nós queiramos formatar um valor numérico, ou, como iremos fazer nesse exemplo, queremos modificar o texto e fazer um troca do que é `shortcode` – nesse caso `[ads]` – para apresentar ali um anúncio.
+
+
+Abaixo, vou focar especificamente na implementação de um Filter, que é o motor de transformação de dados desse sistema e deixaremos Actions para um outro momento.
+
+
+```typescript
+// Nossos filtros será apenas um função que vai receber uma String e retornar uma string (para fins didáticos)
+type Filter = (content: string) => string;
+
+// O motor que irá executar a cadeia de filtros (Filter Chain)
+function applyFilters(content: string, filters: Filter[]): string {
+	// vamos iniciar salvando o conteúdo atual
+  let updatedContent = content;
+  // para cada filtro enviado, vamos 
+  for (const filter of filters) {
+	  // atualizar o conteúdo aplicando o filtro
+    updatedContent = filter(updatedContent);
+  }
+  return updatedContent;
+}
+
+// Plugin 1: Vamos adicionar só um prefixo
+const addSponsoredLabel: Filter = (content: string): string => {
+  return "Sponsored: " + content;
+};
+
+// Plugin 2: Vamos fazer uma troca do shortcode para um conteúdo
+const addAdsShortcode: Filter = (content: string): string => {
+  return content.replace(/\[ads\]/g, "<div>Here are the ads.</div>");
+};
+
+// Camada de exeução com um conteúdo base, passando pela cadeia de filtros
+// você pode mover o [ads] pra onde quiser e veja como o render irá modificar o conteúdo
+const blogContent = "This is a great [ads] tutorial on JavaScript.";
+const filterChain: Filter[] = [addSponsoredLabel, addAdsShortcode];
+
+const finalOutput = applyFilters(blogContent, filterChain);
+console.log(finalOutput);
+```
+
+
+Perceba que nesse sistema o conteúdo vai ser passado por uma série de funções. Cada função vai receber o conteúdo anterior, iniciando pelo conteúdo base, e performar ali uma transformação.  Nesse caso, adicionar prefixo, depois fazer uma troca do shortcode.
+
+
+Esse é o sistema. A mágica foi relevada! [Teste aqui](https://onecompiler.com/typescript/44rpzdkea)
+
+
+---
+
+
+## O bom
+
+
+Aqui nós estamos falando sobre usar uma arquitetura para desacoplar a lógica. 
+
+
+Você vai ter o core do seu sistema e ele não vai precisar saber sobre qualquer outro plugin escrito por qualquer outra pessoa. 
+
+
+Então você vai ter código extensível, que você vai poder adicionar ou remover alguma feature só usando essa ideia de atualizar uma função na cadeia de filtros. 
+
+
+Você vai ter um contrato que vai mostrar para todo mundo como extender o seu sistema. 
+
+
+Além do mais, escalabilidade, porque temos muitos desenvolvedores trabalhando em diferentes aspectos do sistema de maneira simultânea, sem tocar no coração do sistema.
+
+
+Esse é o poder do Filter Chain e uma das partes dos hooks do Wordpress. 
+
+
+Você vê a beleza de ter um software desenhado de uma maneira modular? Eu acho incrível!
+
+
+É algo flexível, robusto, que permite uma aplicação evoluir de um simples blog para uma aplicação absurdamente escalável.
+
+
+---
+
+
+## O ruim
+
+
+Quando falamos de system design, toda arquitetura tem custo: são os trade-offs. 
+
+
+Nós precisamos entender quais são, nesse caso, as desvantagens de ter esse hook de filtros aplicado a essa arquitetura.
+
+
+É um sistema extremamente dinâmico. Significa que nós estamos, a cada requisição, passando por toda uma cadeia de filtros, e isso pode impactar negativamente o tempo de execução.
+
+
+Carregar cada plugin ativo na memória pode também consumir recursos da máquina, e teríamos um overhead de memória, especialmente quando tem alto tráfego.
+
+
+Outro ponto a se pensar é na questão humana. Um plugin com poucos cuidados técnicos pode causer: complexidade de debugar, fragilidade e riscos de segurança, falta de cuidado com performance, etc.
+
+
+Além do mais, se tivermos dois plugins que modificam o mesmo dado, e não tivermos uma regra de ordem de execução no nosso contrato, essa falta de prioridade na execução irá nos causar um pesadelo.
+
+
+---
+
+
+Bom, fico satisfeito por aqui. 
+
+
+Abração do Maykão.
+
+
