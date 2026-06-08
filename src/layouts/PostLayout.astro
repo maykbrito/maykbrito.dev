@@ -6,6 +6,7 @@ import SocialShare from '@/components/SocialShare.astro'
 import TableOfContents from '@/components/TableOfContents.astro'
 import Tags from '@/components/Tags'
 import { postImageImport } from '@/lib/images.mjs'
+import GiscusComments from '@/components/GiscusComments.svelte'
 import Layout from './Layout.astro'
 
 const { frontmatter } = Astro.props
@@ -128,15 +129,15 @@ const dateStr = new Date(
         <div
           class={`
           blog-content
-          prose md:prose-md lg:prose-lg xl:prose-xl dark:prose-invert 
+          prose md:prose-md lg:prose-lg xl:prose-xl dark:prose-invert
           prose-a:text-orange-400
           dark:prose-a:text-yellow-500
           dark:hover:prose-a:text-yellow-300
-          prose-img:rounded-xl 
+          prose-img:rounded-xl
           prose-code:font-normal
-          prose-code:text-orange-500 
+          prose-code:text-orange-500
           dark:prose-code:text-yellow-400
-          prose-pre:my-1 
+          prose-pre:my-1
           `}
         >
           <slot />
@@ -148,6 +149,9 @@ const dateStr = new Date(
           description={frontmatter.description}
           image={frontmatter.cover}
         />
+
+        <!-- Comments -->
+        <GiscusComments client:idle />
       </article>
 
       {
