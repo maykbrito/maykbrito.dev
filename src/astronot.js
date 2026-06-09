@@ -62,9 +62,12 @@ n2m.setCustomTransformer('image', async block => {
 
 n2m.setCustomTransformer('video', async block => {
   const { video } = block
-  const {
-    external: { url: videoUrl },
-  } = video
+  const videoUrl = video?.file?.url || video?.external?.url
+
+  if (!videoUrl) {
+    console.warn('Video block has no URL:', JSON.stringify(video, null, 2))
+    return ''
+  }
 
   let url = videoUrl
 
@@ -74,6 +77,11 @@ n2m.setCustomTransformer('video', async block => {
       const videoId = url.split('&')[0].split('?v=')[1]
       url = `https://www.youtube.com/embed/${videoId}`
     }
+  }
+
+  // Videos uploaded directly to Notion (file type)
+  if (video?.file?.url) {
+    return `<video controls width="100%"><source src="${url}" /></video>`
   }
 
   return `<iframe width="100%" height="480" src="${url}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`

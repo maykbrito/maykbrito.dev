@@ -1,0 +1,1681 @@
+---
+layout: "../../layouts/PostLayout.astro"
+id: "37a121a0-73a1-80fb-a457-dc0ec06f4ea5"
+slug: "login-e-sign-up-com-supabase-auth-no-next-js"
+title: "Login e Sign-up com Supabase Auth no Next.js"
+cover: ""
+tags: [{"id":"4cde291b-ecb5-423e-be06-f0c133aeed53","name":"Tutorial","color":"brown"},{"id":"cbc58484-3446-4907-84c2-4008756a2709","name":"Vibe Code","color":"orange"},{"id":"b65d7253-1760-453b-8ca0-f8c3f91fffcc","name":"Code","color":"default"},{"id":"cdd116be-8dfd-4998-b9b1-b125855725db","name":"AI","color":"purple"}]
+created_time: 2026-06-09T16:48:00.000Z
+last_edited_time: 2026-06-09T22:32:00.000Z
+icon: null
+archived: false
+status: "published"
+publish_date: 2026-06-09
+description: "Este é o primeiro post de uma série onde vamos construir um sistema completo de autenticação e créditos na conta do usuário, para que ele possa “gastar” no nosso app."
+reading_time: "30 min read"
+---
+import Image from '../../components/Image.astro';
+
+
+Peguei um app vibe codado recentemente pra resolver umas questões. Uma delas: o sistema de login funcionava pela metade. O sign-up criava o usuário, mas o login simplesmente não funcionava. E olha que é uma das primeiras coisas que qualquer app precisa ter funcionando.
+
+
+Já implementei autenticação de diversas formas ao longo dos anos. Desde super manual com PHP (sessões, hash de senha, redirect no header), passando por semi manual com Better Auth, até soluções mais autônomas como Clerk. Com Supabase, o auth fica num meio-termo que eu gosto: é menos manual que um JWT do zero, mas você ainda entende o que está acontecendo em algumas fases da configuração.
+
+
+Se seu app já usa Supabase como BaaS, faz sentido continuar com ele para auth. Menos uma dependência, menos uma migração. Fechado?
+
+
+Este é o primeiro post de uma série onde vamos construir um sistema completo de autenticação e créditos na conta do usuário, para que ele possa “gastar” no nosso app. 
+
+
+Ao final da série, você terá: login, sign-up, recuperação de senha, proteção de rotas, sistema de créditos com RLS seguro, e testes unitários cobrindo tudo.
+
+
+Nesse primeiro post: sign-up, login, logout, middleware de proteção e a base do projeto.
+
+
+---
+
+
+## Antes de começar: o boilerplate
+
+
+Se você está começando do zero, clone o template: (_eu gosto de usar o Bun)_
+
+
+```bash
+bun create next-app@16.2.7 meu-app --ts --biome --tailwind --app --src-dir=false
+cd meu-app
+bun add --exact @supabase/ssr@0.12.0 @supabase/supabase-js@2.108.1 zod@4.4.3 react-hook-form@7.78.0 @hookform/resolvers@5.4.0 @tanstack/react-query@5.101.0
+```
+
+
+Se já tem um projeto Next.js rodando, instale apenas o que falta:
+
+
+```bash
+bun add --exact @supabase/ssr@0.12.0 @supabase/supabase-js@2.108.1 zod@4.4.3 react-hook-form@7.78.0 @hookform/resolvers@5.4.0 @tanstack/react-query@5.101.0
+```
+
+
+### Biome e Zed
+
+
+Eu estou utilizando o Zed como editor de código e Biome como linter/formatter. Eu já passei sufoco por não ter um simples copia e cola dessas configurações. Sendo assim, aqui estão as configurações que tenho no meu Zed para funcionar legal com o Biome. 
+
+- Instale o plugin do Biome no Zed
+- Crie um arquivo `.zed/settings.json` (se não tiver) e cole o json abaixo.
+
+```json
+{
+  "formatter": "language_server",
+  "format_on_save": "on",
+  "languages": {
+    "TypeScript": {
+      "formatter": "language_server",
+      "format_on_save": "on",
+      "language_servers": [
+        "biome",
+        "typescript-language-server",
+        "tailwindcss-language-server"
+      ],
+      "code_actions_on_format": {
+        "source.organizeImports.biome": true
+      }
+    },
+    "TSX": {
+      "formatter": "language_server",
+      "format_on_save": "on",
+      "language_servers": [
+        "biome",
+        "typescript-language-server",
+        "tailwindcss-language-server"
+      ],
+      "code_actions_on_format": {
+        "source.organizeImports.biome": true
+      }
+    },
+    "JavaScript": {
+      "formatter": "language_server",
+      "format_on_save": "on",
+      "language_servers": [
+        "biome",
+        "typescript-language-server",
+        "tailwindcss-language-server"
+      ],
+      "code_actions_on_format": {
+        "source.organizeImports.biome": true
+      }
+    }
+  }
+}
+```
+
+- O meu `biome.json` customizado ficou assim:
+
+```json
+{
+  "$schema": "https://biomejs.dev/schemas/2.4.8/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "ignoreUnknown": true,
+    "includes": [
+      "**",
+      "!node_modules",
+      "!.next",
+      "!dist",
+      "!build"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 80
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "suspicious": {
+        "noUnknownAtRules": "off"
+      }
+    },
+    "domains": {
+      "next": "recommended",
+      "react": "recommended"
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "semicolons": "asNeeded"
+    }
+  },
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  }
+}
+```
+
+
+### Estrutura de pastas que vamos criar
+
+
+Para não precisar criar nada manualmente, você irá copiar o código abaixo: 
+
+
+```shell
+#!/bin/bash
+
+mkdir -p app/\(auth\)/login
+mkdir -p app/\(auth\)/signup
+mkdir -p app/\(main\)
+mkdir -p app/auth/callback
+mkdir -p app/api/auth/signup
+mkdir -p components
+mkdir -p hooks
+mkdir -p lib/supabase
+mkdir -p lib/env
+
+touch_if_missing() {
+  [ ! -f "$1" ] && touch "$1"
+}
+
+touch_if_missing "app/layout.tsx"
+touch_if_missing "app/providers.tsx"
+touch_if_missing "app/(auth)/login/page.tsx"
+touch_if_missing "app/(auth)/signup/page.tsx"
+touch_if_missing "app/(auth)/layout.tsx"
+touch_if_missing "app/(main)/layout.tsx"
+touch_if_missing "app/(main)/page.tsx"
+touch_if_missing "app/auth/callback/route.ts"
+touch_if_missing "app/api/auth/signup/route.ts"
+touch_if_missing "components/navbar.tsx"
+touch_if_missing "hooks/use-signup.ts"
+touch_if_missing "hooks/use-login.ts"
+touch_if_missing "hooks/use-logout.ts"
+touch_if_missing "lib/supabase/client.ts"
+touch_if_missing "lib/supabase/server.ts"
+touch_if_missing "lib/supabase/service.ts"
+touch_if_missing "lib/supabase/middleware.ts"
+touch_if_missing "lib/env/client.ts"
+touch_if_missing "lib/env/server.ts"
+touch_if_missing "lib/either.ts"
+touch_if_missing "proxy.ts"
+touch_if_missing ".env.local"
+
+echo "✅ Estrutura criada com sucesso!"
+```
+
+
+Salve como `setup.sh`, dê permissão com `chmod +x setup.sh` e rode com `./setup.sh`. 🥂
+
+
+### Variáveis de ambiente
+
+
+Na `.env.local` na raiz coloque as credenciais do Supabase:
+
+
+```plain text
+NEXT_PUBLIC_SUPABASE_URL=https://seu-projeto.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOi...
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOi...
+```
+
+
+<Image src="/images/posts/90f487f7233b649b785bfc4be41900892a6bd0637538c47f7a811f63427ab896.png" />
+
+
+A `ANON_KEY` é pública (vai pro browser). A `SERVICE_ROLE_KEY` é secreta (só server-side). Nunca confunda as duas.
+
+
+---
+
+
+## Either: tratamento de erros sem try/catch
+
+
+Antes de entrar no código do Supabase, quero apresentar um utilitário que vamos usar em toda a série: o padrão Either.
+
+
+```typescript
+// lib/either.ts
+export type Left<T> = {
+  left: T
+  right?: never
+}
+
+export type Right<U> = {
+  left?: never
+  right: U
+}
+
+export type Either<T, U> = NonNullable<Left<T> | Right<U>>
+
+export const isLeft = <T, U>(e: Either<T, U>): e is Left<T> => {
+  return e.left !== undefined
+}
+
+export const isRight = <T, U>(e: Either<T, U>): e is Right<U> => {
+  return e.right !== undefined
+}
+
+export type UnwrapEither = <T, U>(e: Either<T, U>) => NonNullable<T | U>
+
+export const unwrapEither: UnwrapEither = <T, U>({
+  left,
+  right,
+}: Either<T, U>) => {
+  if (right !== undefined && left !== undefined) {
+    throw new Error(
+      `Received both left and right values at runtime when opening an Either\\nLeft: ${JSON.stringify(left)}\\nRight: ${JSON.stringify(right)}`
+    )
+  }
+  if (left !== undefined) return left as NonNullable<T>
+  if (right !== undefined) return right as NonNullable<U>
+  throw new Error('Received no left or right values at runtime when opening Either')
+}
+
+export const makeLeft = <T>(value: T): Left<T> => ({ left: value })
+export const makeRight = <U>(value: U): Right<U> => ({ right: value })
+
+// Utilitário para wrappear operações assíncronas que podem lançar exceção
+export const tryCatchAsync = async <T, U>(
+  fn: () => Promise<U>
+): Promise<Either<T, U>> => {
+  try {
+    return makeRight(await fn())
+  } catch (e) {
+    return makeLeft(e as T)
+  }
+}
+```
+
+
+### O que é isso e por que usar?
+
+
+Either é um padrão da programação funcional. Em vez de lançar exceções e torcer para que alguém lá em cima capture com try/catch, você retorna um valor que representa explicitamente sucesso (`right`) ou falha (`left`).
+
+
+A sacada dessa implementação: os tipos `Left` e `Right` usam `never` no campo oposto. Isso garante em compile-time que você nunca tem `left` e `right` ao mesmo tempo. O TypeScript não deixa.
+
+
+```typescript
+// Na prática, o uso fica assim:
+const { left: error, right: data } = await doSomething()
+if (error) {
+  // trate o erro
+  return
+}
+// use data com segurança
+```
+
+
+Perceba como o destructuring é natural. Se você já usou o padrão `{ data, error }` do Supabase SDK, o Either segue a mesma lógica. A diferença é que agora o TypeScript te obriga a verificar antes de acessar.
+
+
+**Vantagens:**
+
+- O TypeScript te obriga a lidar com o erro. Você não pode acessar `.right` sem antes verificar que `.left` é undefined. Erros silenciosos deixam de existir.
+- Composição: você pode encadear operações sem blocos try/catch aninhados.
+- Destructuring limpo: `const { left, right } = result` é tão natural quanto o padrão do Supabase.
+- O `unwrapEither` dá uma saída pragmática quando você só quer o valor cru (com guard de runtime).
+
+**Desvantagens:**
+
+- É mais código para algo que o try/catch já poderia resolver
+- Se a equipe não conhece o padrão, pode gerar confusão.
+- Libs externas (como o Supabase SDK) não retornam Either nativamente, então você precisa wrappear.
+- O `unwrapEither` retorna uma union (`T | U`), perdendo o type narrowing. Use com cuidado.
+
+**Quando NÃO usar:**
+
+- Em code paths extremamente simples onde um erro é fatal e deve crashar a app (validação de env vars no boot, por exemplo).
+- Em código que já usa o padrão `{ data, error }` do Supabase (que é, na essência, o mesmo conceito, só com nomes diferentes).
+
+**Quando faz diferença:**
+
+- Em services que compõem múltiplas operações falíveis (consumir crédito + criar look + atualizar status).
+- Em route handlers onde você quer distinguir erros de validação, de autenticação e de negócio sem uma cascata de try/catch.
+
+Nos posts 3 e 4 dessa série, o Either vai brilhar. Por agora, vamos usá-lo de forma pontual no server client.
+
+
+---
+
+
+## Validação de ambiente com Zod
+
+
+Antes de criar os clientes, precisamos de um guard que garanta duas coisas:
+
+1. As variáveis de ambiente existem e são válidas
+2. A `SERVICE_ROLE_KEY` nunca vaze para o browser
+
+```typescript
+// lib/env/server.ts
+import { z } from 'zod'
+
+if (typeof window !== 'undefined') {
+  throw new Error(
+    'server env imported on client: this exposes secrets to the browser'
+  )
+}
+
+const schema = z.object({
+  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
+})
+
+export const env = schema.parse(process.env)
+```
+
+
+O `typeof window !== 'undefined'` é a primeira linha de defesa. Se algum componente client-side tentar importar esse arquivo (diretamente ou por cadeia de imports), a aplicação explode imediatamente com uma mensagem clara.
+
+
+O `z.string().min(1)` garante que a variável não é apenas definida, mas tem conteúdo. Um `.env.local` com `SUPABASE_SERVICE_ROLE_KEY=` (vazio) seria rejeitado.
+
+
+**Onde esse arquivo se encaixa:** o `lib/supabase/service.ts` importa dele. Essa é a conexão. Qualquer coisa que precise da service role key passa por esse guard.
+
+
+---
+
+
+## Os 3 clientes do Supabase
+
+
+Essa é uma decisão arquitetural que importa. No Next.js com App Router, você precisa de 3 clientes diferentes porque cada um roda num contexto diferente:
+
+
+| Cliente | Onde roda                         | RLS           | Pra quê                            |
+| ------- | --------------------------------- | ------------- | ---------------------------------- |
+| Browser | Client components                 | Sim           | Login, leitura de dados do usuário |
+| Server  | Server components, Route Handlers | Sim           | SSR, API routes autenticadas       |
+| Service | Route Handlers, Server Actions    | Não (bypassa) | Escrita em tabelas protegidas      |
+
+
+### Cliente do Browser
+
+
+```typescript
+// lib/supabase/client.ts
+import { createBrowserClient } from '@supabase/ssr'
+
+export function createClient() {
+  return createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '',
+  )
+}
+```
+
+
+Esse é o mais simples. Roda no browser, usa a anon key, respeita RLS. É o que usamos para login, sign-up e leitura de dados do usuário logado.
+
+
+É importante que essa leitura de dados seja apenas de dados mais básicos possíveis. Leia os próximos posts da série para entender essa separação e organização de dados, além do [meu guia sobre segurança em apps vibe codados](https://maykbrito.dev/blog/seguran-a-para-vibe-code-apps-guia-completo/).
+
+
+### Cliente do Server
+
+
+```typescript
+// lib/supabase/server.ts
+// lib/supabase/server.ts
+import { createServerClient } from '@supabase/ssr'
+import { cookies } from 'next/headers'
+import { type Either, makeLeft, makeRight } from '@/lib/either'
+
+type ServerClientError = { message: string; cause?: unknown }
+type ServerClient = ReturnType<typeof createServerClient>
+
+export async function createClient(): Promise<
+  Either<ServerClientError, ServerClient>
+> {
+  const cookieStore = await cookies()
+
+  try {
+    const client = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '',
+      {
+        cookies: {
+          getAll() {
+            return cookieStore.getAll()
+          },
+          setAll(cookiesToSet) {
+            try {
+              cookiesToSet.forEach(({ name, value, options }) => {
+                cookieStore.set(name, value, options)
+              })
+            } catch {
+              // Em Server Components, o Next.js não permite setar cookies.
+              // Isso é esperado quando o middleware está refreshing a sessão.
+            }
+          },
+        },
+      },
+    )
+
+    return makeRight(client)
+  } catch (e) {
+    return makeLeft({
+      message: 'Failed to create Supabase server client',
+      cause: e,
+    })
+  }
+}
+```
+
+
+Esse roda no servidor (Server Components, Route Handlers, Server Actions). Ele precisa do acesso a cookies para ler a sessão do usuário. Ainda usa a anon key, ainda respeita RLS.
+
+
+Aqui já estamos usando o Either. Na prática, o `createServerClient` raramente falha (só se as env vars sumirem em runtime), mas o padrão garante que qualquer caller é obrigado a verificar antes de usar:
+
+
+```typescript
+// Em um Route Handler:
+const { left: error, right: supabase } = await createClient()
+if (error) {
+  return NextResponse.json({ error: 'Internal error' }, { status: 500 })
+}
+// supabase está disponível aqui, tipado e seguro
+```
+
+
+Perceba o destructuring: `{ left: error, right: supabase }`. Se `error` existe, algo deu errado. Se não, `supabase` está pronto. Mesma lógica do `{ data, error }` do Supabase SDK, mas com a garantia de tipos do Either.
+
+
+O `try/catch` interno no `setAll` é uma exceção à regra do Either. Ele está ali porque o Next.js, em Server Components, rejeita escrita de cookies por design. Não é um erro do nosso código, é uma limitação do framework que o próprio Supabase documenta esse padrão.
+
+
+### Cliente de Serviço (Service Role)
+
+
+```typescript
+// lib/supabase/service.ts
+import { createClient } from "@supabase/supabase-js"
+import { env } from "@/lib/env/server"
+
+export function createServiceClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    env.SUPABASE_SERVICE_ROLE_KEY
+  )
+}
+```
+
+
+Esse é o poderoso. Usa a `SERVICE_ROLE_KEY` (validada pelo Zod, protegida contra leak pro browser), que bypassa todas as políticas de RLS. É como se fosse um "admin" do banco.
+
+
+Perceba a cadeia de proteção:
+
+
+```plain text
+service.ts importa env de → lib/env/server.ts
+                              ↓
+                        1. Checa se está no browser (explode se sim)
+                        2. Valida com Zod (explode se vazio)
+                              ↓
+                        Exporta env.SUPABASE_SERVICE_ROLE_KEY tipado e seguro
+```
+
+
+Se alguém cometer o erro de importar `service.ts` num client component, a cadeia estala no primeiro import de `lib/env/server.ts`.
+
+
+---
+
+
+## Banco de dados no Supabase
+
+
+<Image src="/images/posts/a6f4829ccb958a7e549d4c370c904751ee5e2c2155cda9e58660c21e45be01cf.png" />
+
+
+### auth.users
+
+
+Quando você cria um projeto com Supabase, ele já te dá uma tabela `auth.users`. Ela guarda email, senha (hash), metadata e tokens. Você não mexe nela diretamente.
+
+
+Mas seu app precisa guardar mais coisas: nome, avatar, preferências. Onde colocar?
+
+
+A resposta ingênua é: "joga tudo no `user_metadata` do auth.users." A IA frequentemente gera exatamente isso. Funciona pra coisas simples, mas você perde a capacidade de fazer queries, joins, e aplicar RLS de forma granular (e que falaremos com mais profundidade em outro momento).
+
+
+### profiles
+
+
+A solução: criar uma tabela `profiles` no schema público que referencia o `auth.users`. Dados do usuário que ele pode ver e editar ficam aqui.
+
+
+No Post 3 dessa série, vamos criar uma segunda tabela (`app_entitlements`) para dados que só o sistema pode alterar (créditos, plano). Mas por agora, `profiles` é tudo que precisamos.
+
+
+### Criando a tabela profiles
+
+
+<Image src="/images/posts/f2d0000a422d1f3dff92c8ef7f99b6da8e871dff16dc5b09274c41d22dcbeac2.png" />
+
+
+Rode esse SQL no Supabase Dashboard (SQL Editor) ou via migration:
+
+
+```sql
+-- Tabela de perfil do usuário
+CREATE TABLE public.profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  name TEXT NOT NULL DEFAULT '',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- Habilita RLS (obrigatório!)
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+
+-- Política: o usuário só vê e edita o próprio perfil
+CREATE POLICY "Users can manage own profile"
+  ON public.profiles
+  FOR ALL
+  USING (auth.uid() = id)
+  WITH CHECK (auth.uid() = id);
+```
+
+
+Vamos entender cada parte:
+
+- `REFERENCES auth.users(id) ON DELETE CASCADE`: se o usuário for deletado no auth, o perfil some junto.
+- `ENABLE ROW LEVEL SECURITY`: sem isso, qualquer pessoa com a anon key lê todos os perfis.
+- `FOR ALL`: cobre SELECT, INSERT, UPDATE e DELETE numa política só.
+- `USING (auth.uid() = id)`: nas leituras, só retorna a linha onde o id bate com o usuário logado.
+- `WITH CHECK (auth.uid() = id)`: nas escritas, só permite se o id da linha é do próprio usuário. Sem isso, alguém poderia fazer UPDATE trocando o id para o de outra pessoa.
+
+Esse é o mínimo. A tabela existe, está protegida, e o usuário só acessa o que é dele.
+
+
+### A trigger que provisiona o perfil
+
+
+Quando alguém se cadastra, o banco precisa criar automaticamente um registro em `profiles`. Fazer isso na mão, na API route, é frágil. E se esquecer? E se outro fluxo de cadastro (OAuth, magic link) não passar pela sua API?
+
+
+A solução é uma trigger:
+
+
+```sql
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+BEGIN
+  INSERT INTO public.profiles (id, name)
+  VALUES (
+    NEW.id,
+    COALESCE(NEW.raw_user_meta_data ->> 'full_name', '')
+  );
+
+  RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+```
+
+
+`SECURITY DEFINER` faz a função rodar com privilégios de quem a criou (o admin), não de quem disparou. Necessário porque o `auth.users` é do Supabase e a trigger precisa inserir no schema público.
+
+
+`SET search_path = ''` protege contra search_path injection. Boa prática em qualquer função `SECURITY DEFINER`.
+
+
+Com isso, o fluxo é:
+
+1. Usuário se cadastra (cria registro em `auth.users`)
+2. Trigger dispara automaticamente
+3. Cria `profiles` com o `id` e nome do usuário
+
+Pronto. Sem INSERT manual, sem risco de esquecer.
+
+
+### Por que trigger e não um INSERT na API?
+
+
+A alternativa seria fazer o INSERT na API route de sign-up, logo depois do `createUser()`. Mas temos alguns trade-offs.
+
+
+**A favor da trigger:**
+
+- Não importa como o usuário foi criado (API, dashboard, OAuth, magic link), a trigger dispara. Você nunca tem um `auth.users` sem `profiles`.
+- Se o INSERT em `profiles` falhar, o signup inteiro falha. Sem estado inconsistente.
+- A lógica vive num lugar só.
+
+**Contra:**
+
+- É código invisível. Roda no banco, não aparece no seu `git diff`. Documentação vira obrigatória para dar visibilidade.
+- Debug mais difícil. Se falhar, o erro vai pro log do Postgres, não pro seu terminal.
+- Se o provisionamento ficar complexo (chamar API externa, enviar email), a trigger não serve. Ela é pra operações de banco.
+
+Pro nosso caso, criar um registro simples com valores padrão, trigger é o caminho. Se ficar complexo, poderíamos migrar pra um webhook do Supabase Auth.
+
+
+---
+
+
+## Sign-up: a página e a API
+
+
+### Por que o sign-up passa por uma API route?
+
+
+Você pode estar pensando: "por que não chamar `supabase.auth.signUp()` direto do browser?"
+
+
+Pode. Funciona. Mas tem uma razão para usar a service role aqui: controle. 
+
+
+Com `auth.admin.createUser()` no servidor, você:
+
+- Pula a verificação de email (útil em trial/onboarding onde você quer o usuário dentro rápido)
+- Tem controle total sobre os metadados
+- Pode fazer validações extras antes de criar o usuário
+- Pode tratar erros de forma mais previsível
+
+Se quiser exigir verificação de email, mude `email_confirm: true` para `false` e configure o template de email no Supabase Dashboard.
+
+
+### A API Route de Sign-up
+
+
+```typescript
+// app/api/auth/signup/route.ts
+import { NextResponse } from 'next/server'
+import { z } from 'zod'
+import { createServiceClient } from '@/lib/supabase/service'
+
+const SignupSchema = z.object({
+  email: z.email('Email inválido'),
+  password: z.string().min(6, 'Mínimo 6 caracteres'),
+  full_name: z.string().min(2, 'Nome muito curto'),
+})
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json()
+    const { email, password, full_name } = SignupSchema.parse(body)
+
+    const supabase = createServiceClient()
+
+    const { data, error } = await supabase.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true, // pula verificação de email
+      user_metadata: { full_name },
+    })
+
+    if (error) {
+      // Usuário já existe
+      if (error.message?.includes('already been registered')) {
+        return NextResponse.json(
+          { error: 'USER_ALREADY_EXISTS' },
+          { status: 409 },
+        )
+      }
+      return NextResponse.json({ error: error.message }, { status: 400 })
+    }
+
+    return NextResponse.json(
+      { user: { id: data.user.id, email: data.user.email } },
+      { status: 201 },
+    )
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: 'Dados inválidos', details: err.issues },
+        { status: 422 },
+      )
+    }
+    return NextResponse.json({ error: 'Erro interno' }, { status: 500 })
+  }
+}
+```
+
+
+Perceba: validação com Zod antes de qualquer coisa. Se o body não bate com o schema, retorna 422 sem tocar no banco e usamos um simples try/catch para capturar esse erro.
+
+
+### React Query: o provider
+
+
+Antes de criar os hooks, precisamos do provider. É um client component que envolve o app inteiro:
+
+
+```typescript
+// app/providers.tsx
+'use client'
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { useState } from 'react'
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          mutations: {
+            retry: false, // auth não deve retry automático
+          },
+        },
+      }),
+  )
+
+  return (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  )
+}
+```
+
+
+E no layout raiz:
+
+
+```typescript
+// app/layout.tsx
+import type { Metadata } from 'next'
+import { Geist, Geist_Mono } from 'next/font/google'
+import { Providers } from './providers'
+
+import './globals.css'
+
+const geistSans = Geist({
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
+})
+
+const geistMono = Geist_Mono({
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
+})
+
+export const metadata: Metadata = {
+  title: 'Create Next App',
+  description: 'Generated by create next app',
+}
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
+  return (
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col">
+        <Providers>{children}</Providers>
+      </body>
+    </html>
+  )
+}
+```
+
+
+O `useState` no provider não é à toa. Se você instanciar o `QueryClient` fora do componente, todos os usuários compartilham a mesma instância no servidor (SSR). Com `useState`, cada request tem a sua.
+
+
+### O hook de signup
+
+
+```typescript
+// hooks/use-signup.ts
+import { useMutation } from "@tanstack/react-query"
+import { createClient } from "@/lib/supabase/client"
+
+type SignupInput = {
+  email: string
+  password: string
+  full_name: string
+}
+
+type SignupError = {
+  code: "USER_ALREADY_EXISTS" | "VALIDATION_ERROR" | "LOGIN_FAILED" | "UNKNOWN"
+  message: string
+}
+
+async function signup(input: SignupInput): Promise<void> {
+  // 1. Cria o usuário via API (service role)
+  const res = await fetch("/api/auth/signup", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  })
+
+  if (!res.ok) {
+    const err = await res.json()
+    if (err.error === "USER_ALREADY_EXISTS") {
+      throw { code: "USER_ALREADY_EXISTS", message: "Esse email já está cadastrado." }
+    }
+    throw { code: "VALIDATION_ERROR", message: err.error || "Erro ao criar conta" }
+  }
+
+  // 2. Faz login automático após criar
+  const supabase = createClient()
+  const { error } = await supabase.auth.signInWithPassword({
+    email: input.email,
+    password: input.password,
+  })
+
+  if (error) {
+    throw { code: "LOGIN_FAILED", message: "Conta criada, mas falha no login automático." }
+  }
+}
+
+export function useSignup() {
+  return useMutation<void, SignupError, SignupInput>({
+    mutationFn: signup,
+    onSuccess: () => {
+      // Full reload para atualizar sessão no middleware
+      window.location.href = "/welcome"
+    },
+  })
+}
+```
+
+
+O que o React Query dá de graça para usarmos posteriormente:
+
+- `isPending`: estado de loading sem você gerenciar
+- `error`: tipado como `SignupError`, sem `useState` manual
+- `reset()`: limpa o estado de erro quando o usuário tenta de novo
+- `mutate()`: dispara a mutation
+
+A lógica de negócio (fetch + auto-login) fica encapsulada no hook. A página só se preocupa com UI, coisa que eu, particularmente, gosto muito.
+
+
+Não sou fã daquele padrão de código React porco carregado de UI + lógica. Me remete aos tempos do PHP que fazíamos tudo num arquivo gigante: Banco, validação, regra de negócio, ui, pizza, guaraná, e tudo mais.
+
+
+### A página de Sign-up
+
+
+```typescript
+// app/(auth)/signup/page.tsx
+'use client'
+
+import { zodResolver } from '@hookform/resolvers/zod'
+import Link from 'next/link'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { useSignup } from '@/hooks/use-signup'
+
+const SignupFormSchema = z.object({
+  full_name: z.string().min(2, 'Nome muito curto'),
+  email: z.email('Email inválido'),
+  password: z.string().min(6, 'Mínimo 6 caracteres'),
+  terms: z.literal(true, { message: 'Aceite os termos para continuar' }),
+})
+
+type SignupForm = z.infer<typeof SignupFormSchema>
+
+export default function SignupPage() {
+  const { mutate, isPending, error, reset } = useSignup()
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignupForm>({
+    resolver: zodResolver(SignupFormSchema),
+  })
+
+  function onSubmit(data: SignupForm) {
+    reset() // limpa erro anterior
+    mutate({
+      email: data.email,
+      password: data.password,
+      full_name: data.full_name,
+    })
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="w-full max-w-md space-y-4"
+      >
+        <h1 className="text-2xl font-bold">Criar conta</h1>
+
+        {error && (
+          <div className="p-3 bg-red-100 text-red-700 rounded">
+            {error.message}
+          </div>
+        )}
+
+        <div>
+          <label htmlFor="full_name">Nome completo</label>
+          <input
+            id="full_name"
+            type="text"
+            {...register('full_name')}
+            className="w-full border rounded p-2"
+          />
+          {errors.full_name && (
+            <span className="text-red-500 text-sm">
+              {errors.full_name.message}
+            </span>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            {...register('email')}
+            className="w-full border rounded p-2"
+          />
+          {errors.email && (
+            <span className="text-red-500 text-sm">{errors.email.message}</span>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="password">Senha</label>
+          <input
+            id="password"
+            type="password"
+            {...register('password')}
+            className="w-full border rounded p-2"
+          />
+          {errors.password && (
+            <span className="text-red-500 text-sm">
+              {errors.password.message}
+            </span>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <input id="terms" type="checkbox" {...register('terms')} />
+          <label htmlFor="terms" className="text-sm">
+            Aceito os <Link href="/termos-de-uso">termos de uso</Link>
+          </label>
+          {errors.terms && (
+            <span className="text-red-500 text-sm">{errors.terms.message}</span>
+          )}
+        </div>
+
+        <button
+          type="submit"
+          disabled={isPending}
+          className="w-full bg-black text-white rounded p-2 disabled:opacity-50"
+        >
+          {isPending ? 'Criando...' : 'Criar conta'}
+        </button>
+
+        <p className="text-center text-sm">
+          Já tem conta? <Link href="/login">Entrar</Link>
+        </p>
+      </form>
+    </div>
+  )
+}
+```
+
+
+A página é pura UI. A lógica vive no hook. Se amanhã você mudar a API de signup, mexe num lugar só.
+
+
+O fluxo é:
+
+1. **POST para a API** cria o usuário via service role
+2. **signInWithPassword no browser** autentica e seta os cookies de sessão
+3. **`onSuccess`** faz o redirect com full page reload
+
+Por que `window.location.href` e não `router.push`? Um full page reload garante que o middleware do Next.js leia os cookies atualizados. Com `router.push`, o layout pode não re-renderizar e o usuário ficaria num estado estranho.
+
+
+---
+
+
+## Login: mesmo padrão do Sign-up
+
+
+### O hook de login
+
+
+```typescript
+// hooks/use-login.ts
+import { useMutation } from '@tanstack/react-query'
+import { createClient } from '@/lib/supabase/client'
+
+type LoginInput = {
+  email: string
+  password: string
+}
+
+type LoginError = {
+  code: 'INVALID_CREDENTIALS' | 'UNKNOWN'
+  message: string
+}
+
+async function login(input: LoginInput): Promise<void> {
+  const supabase = createClient()
+  const { error } = await supabase.auth.signInWithPassword({
+    email: input.email,
+    password: input.password,
+  })
+
+  if (error) {
+    throw { code: 'INVALID_CREDENTIALS', message: 'Email ou senha incorretos.' }
+  }
+
+  window.location.href = '/'
+}
+
+export function useLogin() {
+  return useMutation<void, LoginError, LoginInput>({
+    mutationFn: login,
+  })
+}
+```
+
+
+Perceba que a mensagem de erro é genérica: "Email ou senha incorretos." Nunca diga "email não encontrado" ou "senha errada" separadamente. Isso facilita enumeração de usuários (um atacante descobre quais emails existem no sistema). 
+
+
+É uma regra básica, mas não custa lembrar.
+
+
+### A página de Login
+
+
+```typescript
+// app/(auth)/login/page.tsx
+'use client'
+
+import { zodResolver } from '@hookform/resolvers/zod'
+import Link from 'next/link'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { useLogin } from '@/hooks/use-login'
+
+const LoginFormSchema = z.object({
+  email: z.email('Email inválido'),
+  password: z.string().min(1, 'Digite sua senha'),
+})
+
+type LoginForm = z.infer<typeof LoginFormSchema>
+
+export default function LoginPage() {
+  const { mutate, isPending, error, reset } = useLogin()
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginForm>({
+    resolver: zodResolver(LoginFormSchema),
+  })
+
+  function onSubmit(data: LoginForm) {
+    reset()
+    mutate(data)
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="w-full max-w-md space-y-4"
+      >
+        <h1 className="text-2xl font-bold">Entrar</h1>
+
+        {error && (
+          <div className="p-3 bg-red-100 text-red-700 rounded">
+            {error.message}
+          </div>
+        )}
+
+        <div>
+          <label htmlFor="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            {...register('email')}
+            className="w-full border rounded p-2"
+          />
+          {errors.email && (
+            <span className="text-red-500 text-sm">{errors.email.message}</span>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="password">Senha</label>
+          <input
+            id="password"
+            type="password"
+            {...register('password')}
+            className="w-full border rounded p-2"
+          />
+          {errors.password && (
+            <span className="text-red-500 text-sm">
+              {errors.password.message}
+            </span>
+          )}
+        </div>
+
+        <button
+          type="submit"
+          disabled={isPending}
+          className="w-full bg-black text-white rounded p-2 disabled:opacity-50"
+        >
+          {isPending ? 'Entrando...' : 'Entrar'}
+        </button>
+
+        <div className="flex justify-between text-sm">
+          <Link href="/forgot-password">Esqueci minha senha</Link>
+          <Link href="/signup">Criar conta</Link>
+        </div>
+      </form>
+    </div>
+  )
+}
+```
+
+
+Mesmo padrão. Hook cuida da lógica, página cuida da UI. Se amanhã você adicionar OAuth (Google, GitHub), cria um `useOAuthLogin()` e a página continua igual.
+
+
+---
+
+
+## Auth Callback
+
+
+Quando o Supabase envia um link por email (confirmação, recovery, magic link), ele redireciona o usuário para uma URL do seu app com um `code` na query string. Esse code precisa ser trocado por uma sessão válida.
+
+
+```typescript
+// app/auth/callback/route.ts
+import { NextResponse } from 'next/server'
+import { createClient } from '@/lib/supabase/server'
+
+export async function GET(request: Request) {
+  const { searchParams, origin } = new URL(request.url)
+  const code = searchParams.get('code')
+  const next = searchParams.get('next') ?? '/'
+
+  if (!code) {
+    return NextResponse.redirect(`${origin}/login?error=auth_failed`)
+  }
+
+  const { left: error, right: supabase } = await createClient()
+
+  if (error) {
+    return NextResponse.redirect(`${origin}/login?error=internal`)
+  }
+
+  const { error: authError } = await supabase.auth.exchangeCodeForSession(code)
+
+  if (authError) {
+    return NextResponse.redirect(`${origin}/login?error=auth_failed`)
+  }
+
+  return NextResponse.redirect(`${origin}${next}`)
+}
+```
+
+
+Perceba o Either em ação com destructuring: `const { left: error, right: supabase }`. Se `error` existe, algo falhou na criação do client. Se não, `supabase` está pronto pra uso. Sem try/catch, sem exceção voando, sem verificação verbosa.
+
+
+No Supabase Dashboard, configure a "Site URL" e "Redirect URLs" para incluir:
+
+- `http://localhost:3000/auth/callback` (dev)
+- `https://seuapp.com/auth/callback` (produção)
+
+Sem isso configurado, os links de email vão redirecionar para lugar nenhum.
+
+
+---
+
+
+## Middleware e proxy
+
+
+Agora vamos proteger nossas rotas automaticamente, fazendo um whitelist liberando apenas as rotas que queremos que sejam públicas e bloqueando todas as outras.
+
+
+O middleware do Next.js roda em TODA requisição antes de chegar na página. É o lugar certo para:
+
+1. Refreshar a sessão do Supabase (tokens expiram)
+2. Redirecionar usuários não autenticados para `/login`
+
+```typescript
+// lib/supabase/middleware.ts
+import { createServerClient } from "@supabase/ssr"
+import { NextResponse, type NextRequest } from "next/server"
+
+// Rotas que não precisam de autenticação
+const PUBLIC_ROUTES = [
+  "/",
+  "/login",
+  "/signup",
+  "/forgot-password",
+  "/reset-password",
+  "/auth/callback",
+  "/api",
+  "/termos-de-uso",
+  "/privacidade",
+]
+
+function isPublicRoute(pathname: string): boolean {
+  return PUBLIC_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`)
+  )
+}
+
+export async function updateSession(request: NextRequest) {
+  let supabaseResponse = NextResponse.next({
+    request,
+  })
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll(cookiesToSet) {
+          // Seta cookies na request (para o server component ler)
+          cookiesToSet.forEach(({ name, value }) =>
+            request.cookies.set(name, value)
+          )
+          // Seta cookies na response (para o browser guardar)
+          supabaseResponse = NextResponse.next({ request })
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options)
+          )
+        },
+      },
+    }
+  )
+
+  // IMPORTANTE: Não use getSession() aqui.
+  // getSession() lê do storage local sem validar com o servidor.
+  // getUser() faz uma requisição ao Supabase Auth e valida o token.
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  // Se não está logado e a rota é protegida, redireciona
+  if (!user && !isPublicRoute(request.nextUrl.pathname)) {
+    const url = request.nextUrl.clone()
+    url.pathname = "/login"
+    return NextResponse.redirect(url)
+  }
+
+  return supabaseResponse
+}
+```
+
+
+E o entry point na raiz do projeto. No Next.js 16, o arquivo se chama `proxy.ts` (não mais `middleware.ts`) e a função exportada é `proxy`:
+
+
+```typescript
+// proxy.ts
+import type { NextRequest } from 'next/server'
+import { updateSession } from '@/lib/supabase/middleware'
+
+export async function proxy(request: NextRequest) {
+  return updateSession(request)
+}
+
+export const config = {
+  matcher: [
+    // Ignora arquivos estáticos e imagens
+    '/((?!_next/static|_next/image|favicon.ico|.*\\\\.(?:svg|png|jpg|jpeg|gif|webp)$|manifest\\\\.json).*)',
+  ],
+}
+```
+
+
+**Nota:** esse client usa diretamente os cookies da request/response do Next.js, que é um contexto diferente do Server Component.
+
+
+### Por que getUser() e não getSession()?
+
+
+Esse é um detalhe que muita gente erra (e a IA gera errado frequentemente).
+
+- `getSession()` lê o token do storage local e decodifica. Não valida com o servidor. Se o token foi revogado, getSession() ainda retorna sucesso.
+- `getUser()` faz uma requisição real ao Supabase Auth, validando que o token ainda é válido.
+
+No middleware, você quer a validação real. Use `getUser()`.
+
+
+---
+
+
+## Logout e a Navbar
+
+
+O logout precisa de um lugar na tela. Vamos criar uma navbar simples: nome do app no canto esquerdo, e no canto direito, o nome do usuário + botão "Sair" (se logado) ou "Entrar" (se não logado).
+
+
+### O hook de logout
+
+
+Seguindo o mesmo padrão dos hooks anteriores:
+
+
+```typescript
+// hooks/use-logout.ts
+import { useMutation } from '@tanstack/react-query'
+import { createClient } from '@/lib/supabase/client'
+
+async function logout(): Promise<void> {
+  const supabase = createClient()
+  await supabase.auth.signOut()
+}
+
+export function useLogout() {
+  return useMutation({
+    mutationFn: logout,
+    onSuccess: () => {
+      window.location.href = '/login'
+    },
+  })
+}
+```
+
+
+`window.location.href` e não `router.push`. O reload garante que:
+
+- Os cookies de sessão são removidos
+- O proxy vê que não há sessão
+- Qualquer estado em memória (React Query cache, stores) é limpo
+
+### A Navbar
+
+
+```typescript
+// components/navbar.tsx
+'use client'
+
+import Link from 'next/link'
+import { useLogout } from '@/hooks/use-logout'
+
+type NavbarProps = {
+  user: { name: string } | null
+}
+
+export function Navbar({ user }: NavbarProps) {
+  const { mutate: signOut, isPending } = useLogout()
+
+  return (
+    <nav className="flex items-center justify-between px-6 py-4 border-b">
+      <Link href="/" className="font-bold text-lg">
+        MeuApp
+      </Link>
+
+      <div>
+        {user ? (
+          <div className="flex items-center gap-4">
+            <span className="text-sm">{user.name}</span>
+            <button
+              type="button"
+              onClick={() => signOut()}
+              disabled={isPending}
+              className="text-sm text-red-600 hover:underline disabled:opacity-50"
+            >
+              {isPending ? 'Saindo...' : 'Sair'}
+            </button>
+          </div>
+        ) : (
+          <Link
+            href="/login"
+            className="text-sm bg-black text-white px-4 py-2 rounded"
+          >
+            Entrar
+          </Link>
+        )}
+      </div>
+    </nav>
+  )
+}
+```
+
+
+A Navbar recebe `user` como prop. Quem decide se o usuário está logado é o layout que renderiza ela, não a Navbar em si. Isso mantém o componente simples e testável.
+
+
+### Integrando no layout principal
+
+
+```typescript
+// app/(main)/layout.tsx
+import { Navbar } from '@/components/navbar'
+import { createClient } from '@/lib/supabase/server'
+
+export default async function MainLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const { left: error, right: supabase } = await createClient()
+
+  let user = null
+
+  if (!error) {
+    const { data } = await supabase.auth.getUser()
+    if (data.user) {
+      // Busca o nome do profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('name')
+        .eq('id', data.user.id)
+        .single()
+
+      user = { name: profile?.name || 'Usuário' }
+    }
+  }
+
+  return (
+    <>
+      <Navbar user={user} />
+      <main>{children}</main>
+    </>
+  )
+}
+```
+
+
+Perceba: o layout é um Server Component (async). Ele busca o usuário no servidor, passa pra Navbar como prop. A Navbar é client component (precisa do `onClick` pro logout), mas não precisa fazer fetch nenhum.
+
+
+Esse é o padrão: **Server Component busca dados, Client Component cuida de interação.**
+
+
+O route group `(main)` envolve todas as páginas que mostram a navbar. As páginas de auth (`(auth)`) continuam com layout limpo, sem navbar.
+
+
+### Home page
+
+
+Vou substituir o conteúdo da home page padrão do Next por algo mais simples
+
+
+```typescript
+// app/(main)/page.tsx
+export default function Home() {
+  return (
+    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black h-dvh">
+      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+        <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
+          To get started, edit the app/(main)/page.tsx file.
+        </h1>
+      </main>
+    </div>
+  )
+}
+```
+
+
+Essa página é pública e poderia ser considerada a Landing Page do seu app.
+
+
+---
+
+
+## Layout do grupo (auth)
+
+
+As páginas de login e signup compartilham um layout limpo, sem navbar:
+
+
+```typescript
+// app/(auth)/layout.tsx
+export default function AuthLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return <>{children}</>
+}
+```
+
+
+### Como os route groups se encaixam
+
+
+```plain text
+app/layout.tsx              → Shell: <html> + <Providers>
+├── (auth)/layout.tsx       → Sem navbar. Páginas: /login, /signup
+├── (main)/layout.tsx       → Com navbar. Páginas: /, /welcome, /dashboard, etc.
+└── (main)/page.tsx         → Sua home page (rota /)
+```
+
+
+Route groups não adicionam segmento na URL. `/login` continua sendo `/login`, não `/auth/login`. A home page fica em `app/(main)/page.tsx` e a URL continua sendo `/`.
+
+
+A separação é puramente de layout. Tudo que precisa de navbar vai dentro de `(main)/`. Tudo que é tela de auth vai dentro de `(auth)/`. O root layout (`app/layout.tsx`) é só o shell com HTML e providers, sem UI.
+
+
+---
+
+
+## O que acontece por baixo: o fluxo completo
+
+
+<video controls width="100%"><source src="https://prod-files-secure.s3.us-west-2.amazonaws.com/357a8b35-c371-46d6-b957-0271c35f0829/f5bc2e47-0f3d-4106-9675-ed66ef8b652b/export-1781043633662.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=ASIAZI2LB4662R5SPKE7%2F20260609%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20260609T223436Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEA8aCXVzLXdlc3QtMiJHMEUCIQDWrBp3i10W9HsPl6g34yJwK9UUSeN8CR9Y03bYiXKOIAIgM0N7cViG1%2Fo%2FoOyA8E8FWV66eOHUjY2zSVJ%2FRPD5pHAqiAQI1%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgw2Mzc0MjMxODM4MDUiDPjOB85uv7qGixO58CrcA1otaApMGlWG56c%2BD25L%2BTGk8meZocqBykRt9xgH%2FN41y2Xd4rDlGV%2BICuw%2F2sxtGkObFw8ngH8UTkcydRBYZ049KnlS3ujhGdVCYiuudJDrvLowyyy7YvbIXdJnBrTpOrzjrBHgjn9DnSqnOcAin%2F3QEsm9bB36rFsBKX7sZgdhbSrEV0qLaO4dJEVxhwrZmBordvmwSnYpq%2Bi%2FJEXZfasXBzEVWBzjsX1AVzqlGM9RPZPMPdUzjh1WyhfEg2XGqfgz1WIUCBl8q4%2F%2B0lrmFyMKGo47Ynt75l9Ny7kZeFwRGFIhU4Nt3N77nhm9wlFacv50fNi%2FiKEGehA75pxNHamb3YiR9H79Atnn3GyrgcaCUcE4aJo%2BLB%2BsrUaGZqZ%2FbIe0v4kOBqndiaEMeOiHSfUQ4K5RhJYPBg4rBH%2FLXHuzzyAsojRmxcA31u5WRKaW25UCj6QBpT9yvL19vbkkjGMknwN0RJUO7TbWwguyCBc3SYBZpolPoHMmA%2F74BzBGpEaFVCOCZcqGtiu2ldMkx5FKYImWKIC3iaS56nbz4CWvCW8Nt9Flr%2FRaGbhV13YGp10slWxmAJqTXnQAljKzj%2FR1eNi%2FGyBC9mo%2FRiSYYXB0OVKBdrzx4Aw1aHDoMPeiotEGOqUBJGVaE5zgBGK0iGPizf9BisceAQxSGUxsuFIYf7fMCECAHQnMoIMqkQWhodBK6yyst%2FoM5I3f16NaaY6LWu%2Bx9M9z7Kxgu6MQFm%2B3b1epiSIHLoUL7LL3Q011U%2Fu0bcGUh1ZHSj9%2Fd7npmPUd1GTDhcaE33B2ND06SdBHwLmrpRMj0yUABCbEfOb8ZTidnAHECYY9RtOVaf8WGbehvDAw13tN9Uf0&X-Amz-Signature=0616e929430e3dc287a2272bac2fda39ff6c69b06ab61b89b7ea46be3e9f0075&X-Amz-SignedHeaders=host&x-amz-checksum-mode=ENABLED&x-id=GetObject" /></video>
+
+
+Vamos mapear o que acontece em cada cenário:
+
+
+### Sign-up:
+
+
+```plain text
+1. Usuário preenche form → POST /api/auth/signup
+2. API valida com Zod → createServiceClient() → auth.admin.createUser()
+   ↳ service.ts importa env de lib/env/server.ts (guard + Zod validation)
+3. Supabase cria registro em auth.users
+4. Trigger handle_new_user() dispara:
+   → INSERT em profiles (id, name)
+5. API retorna 201
+6. Browser chama signInWithPassword() → seta cookies de sessão
+7. window.location.href = "/welcome" → middleware valida sessão → OK
+```
+
+
+### Login:
+
+
+```plain text
+1. Usuário preenche form
+2. Browser chama signInWithPassword() direto
+3. Supabase valida email+senha → retorna tokens
+4. @supabase/ssr seta tokens nos cookies automaticamente
+5. window.location.href = "/" → middleware valida sessão → OK
+```
+
+
+### Acesso a rota protegida:
+
+
+```plain text
+1. Requisição chega no middleware
+2. Middleware chama getUser() → valida token com Supabase
+3. Se válido → NextResponse.next() (deixa passar)
+4. Se inválido → redirect para /login
+```
+
+
+---
+
+
+## Recapitulando
+
+
+Nesse post implementamos:
+
+- **Either** como utilidade base para tratamento explícito de erros (sem try/catch espalhado)
+- **Validação de env vars** com Zod + guard contra leak pro browser
+- **3 clientes Supabase** com responsabilidades claras (browser, server, service)
+- **Tabela profiles** com RLS protegendo leitura e escrita
+- **Trigger SQL** que provisiona o perfil automaticamente no cadastro
+- **Sign-up em dois passos** (API route com service role + login automático no browser)
+- **Login direto** com signInWithPassword no client
+- **Auth callback** para trocar codes por sessões
+- **Middleware** que protege rotas e refresha tokens
+- **Logout** com full reload para limpar estado
+
+O app agora tem autenticação funcional. 
+
+
+Mas falta uma coisa que todo usuário vai precisar em algum momento: recuperar a senha.
+
+
+No próximo post, implementamos o fluxo completo de "esqueci minha senha" com `/forgot-password` e `/reset-password`.
+
+
+> O projeto final completo está nesse repo [https://github.com/maykbrito/basic-supabase-auth](https://github.com/maykbrito/basic-supabase-auth)
+
+
+---
+
+
+Implementa aí no seu projeto e me conta o que achou.
+
+
+Abração do Maykão.
+
+
